@@ -32,7 +32,7 @@ export default function LoginLeftPanel() {
                 </h2>
 
                 <div className="mt-10 text-[12px] tracking-[0.16em] uppercase text-[#333]">
-                    — since 2025
+                    — since 2026
                 </div>
             </div>
         </div>

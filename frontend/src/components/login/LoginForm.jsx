@@ -87,7 +87,7 @@ export default function LoginForm() {
 
                 <button type="submit" disabled={loading}
                     className="w-full py-4 text-[11px] tracking-[0.16em] uppercase font-medium border-none transition-all duration-250"
-                    style={{ background: loading ? '#8a6d2f' : '#c9a84c', color: '#000', cursor: 'none' }}>
+                    style={{ background: loading ? '#8a6d2f' : '#c9a84c', color: '#000'}}>
                     {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                 </button>
             </form>
