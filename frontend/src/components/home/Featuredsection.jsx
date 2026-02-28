@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import MangaCard from './MangaCard';
+import MangaCard from './Mangacard';
 
 const FEATURED = [
     { id: 1, title: 'Naruto — Tập 72',        author: 'Masashi Kishimoto', genre: 'Shounen', price: 35000, oldPrice: 45000, badge: 'Hot' },
