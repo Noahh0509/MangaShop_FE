@@ -1,7 +1,8 @@
 import axios from 'axios';
 
+
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: 'https://mangashop-rnfc.onrender.com',
     withCredentials: true, // gửi cookie refreshToken tự động
 });
 
