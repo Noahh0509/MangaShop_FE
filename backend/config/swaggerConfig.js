@@ -1,4 +1,9 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import dotenv from 'dotenv';
+
+dotenv.config()
+
+const BE_API = process.env.BE_API
 
 const options = {
     definition: {
@@ -10,7 +15,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:5000',
+                url: BE_API,
                 description: 'Local development',
             },
         ],
