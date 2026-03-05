@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import UserListSection from '../components/home/Userlistsection';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedSection from '../components/home/Featuredsection';
 import NewReleasesSection from '../components/home/Newreleasessection';
@@ -12,7 +13,7 @@ export default function HomePage() {
             
 
             <Header />
-
+            <UserListSection />
             <main className="flex-1">
                 <HeroSection />
                 <FeaturedSection />
