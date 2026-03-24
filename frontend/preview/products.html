@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Truyện Tranh — MangaShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;overflow-x:hidden}
+body{background:#0e0e0e;color:#e8e2d9;font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6}
+a{text-decoration:none;color:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .6s ease both}
+
+/* HEADER */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:50;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid transparent;transition:all .3s}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.08em;color:#e8e2d9}
+.logo span{color:#c9a84c}
+.nav-link{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#888;transition:color .2s}
+.nav-link:hover,.nav-link.active{color:#e8e2d9}
+.btn-login{padding:8px 20px;border:1px solid #8a6d2f;color:#c9a84c;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:all .25s}
+.btn-login:hover{background:#c9a84c;color:#000}
+.cart-icon{color:#888;transition:color .2s}
+.cart-icon:hover{color:#c9a84c}
+
+/* LAYOUT */
+.page{padding-top:72px;display:flex;min-height:100vh}
+.sidebar{width:260px;flex-shrink:0;border-right:1px solid #222;padding:40px 32px;position:sticky;top:72px;height:calc(100vh - 72px);overflow-y:auto}
+.main-content{flex:1;padding:40px 48px}
+
+/* SIDEBAR */
+.filter-section{margin-bottom:36px}
+.filter-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#c9a84c;margin-bottom:16px;display:block}
+.filter-option{display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-bottom:1px solid #161616;transition:color .2s}
+.filter-option:hover{color:#c9a84c}
+.filter-option input{accent-color:#c9a84c}
+.filter-option span{font-size:13px;color:#888;transition:color .2s}
+.filter-option:hover span{color:#e8e2d9}
+
+/* SEARCH + SORT BAR */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;gap:16px}
+.search-wrap{position:relative;flex:1;max-width:360px}
+.search-wrap input{width:100%;background:transparent;border:1px solid #222;color:#e8e2d9;font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 40px 10px 16px;outline:none;transition:border-color .2s}
+.search-wrap input::placeholder{color:#444}
+.search-wrap input:focus{border-color:#8a6d2f}
+.search-wrap svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#555}
+.sort-select{background:transparent;border:1px solid #222;color:#888;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;padding:10px 16px;outline:none;text-transform:uppercase;cursor:pointer}
+.sort-select:focus{border-color:#8a6d2f;color:#e8e2d9}
+.result-count{font-size:12px;color:#555;letter-spacing:.08em}
+
+/* GRID */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:#222}
+
+/* CARD */
+.card{background:#0e0e0e;padding:24px;display:flex;flex-direction:column;transition:background .25s;position:relative;cursor:pointer}
+.card:hover{background:#161616}
+.card-cover{aspect-ratio:3/4;background:#161616;overflow:hidden;margin-bottom:20px;position:relative}
+.card-cover-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1a1a 0%,#222 50%,#1a1a1a 100%);font-size:48px;opacity:.15;transition:transform .5s}
+.card:hover .card-cover-inner{transform:scale(1.04)}
+.badge{position:absolute;top:12px;left:12px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;font-weight:500}
+.badge-hot{background:#c9a84c;color:#000}
+.badge-sale{border:1px solid #8a6d2f;color:#c9a84c}
+.badge-new{border:1px solid #555;color:#888}
+.card-genre{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d2f;margin-bottom:8px}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1.3;margin-bottom:6px;transition:color .25s}
+.card:hover .card-title{color:#c9a84c}
+.card-author{font-size:12px;color:#555}
+.card-price{margin-top:16px;font-size:14px;font-weight:500}
+.card-price-old{font-size:11px;color:#444;text-decoration:line-through;margin-left:8px}
+.card-arrow{position:absolute;bottom:24px;right:24px;width:36px;height:36px;border:1px solid #222;display:flex;align-items:center;justify-content:center;color:#c9a84c;opacity:0;transform:translate(4px,4px);transition:all .25s}
+.card:hover .card-arrow{opacity:1;transform:translate(0,0)}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;gap:8px;margin-top:48px;justify-content:center}
+.page-btn{width:36px;height:36px;border:1px solid #222;display:flex;align-items:center;justify-content:center;font-size:12px;color:#555;transition:all .2s;cursor:pointer}
+.page-btn:hover,.page-btn.active{border-color:#8a6d2f;color:#c9a84c}
+.page-btn.active{background:rgba(201,168,76,.08)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+  <a href="index.html" class="logo">Manga<span>Shop</span></a>
+  <nav style="display:flex;gap:40px;">
+    <a href="#" class="nav-link">Trang chủ</a>
+    <a href="products.html" class="nav-link active">Truyện tranh</a>
+    <a href="#" class="nav-link">Về chúng tôi</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <a href="cart.html" class="cart-icon">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M10 21a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+    </a>
+    <a href="profile.html" class="nav-link">Tài khoản</a>
+    <a href="#" class="btn-login">Đăng nhập</a>
+  </div>
+</header>
+
+<div class="page">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="filter-section">
+      <span class="filter-label">Thể loại</span>
+      <label class="filter-option"><input type="checkbox" checked><span>Shounen</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Seinen</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Shoujo</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Mystery</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Sports</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Sci-fi</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Comedy</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Horror</span></label>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Giá</span>
+      <label class="filter-option"><input type="radio" name="price" checked><span>Tất cả</span></label>
+      <label class="filter-option"><input type="radio" name="price"><span>Dưới 30.000đ</span></label>
+      <label class="filter-option"><input type="radio" name="price"><span>30.000 – 40.000đ</span></label>
+      <label class="filter-option"><input type="radio" name="price"><span>Trên 40.000đ</span></label>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Trạng thái</span>
+      <label class="filter-option"><input type="checkbox"><span>Còn hàng</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Đang giảm giá</span></label>
+      <label class="filter-option"><input type="checkbox"><span>Mới ra mắt</span></label>
+    </div>
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid #222;">
+      <button onclick="void(0)" style="width:100%;padding:12px;background:transparent;border:1px solid #222;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='#8a6d2f';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#222';this.style.color='#555'">Xóa bộ lọc</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content fade-up">
+    <!-- Page header -->
+    <div style="margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #222;">
+      <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#c9a84c;margin-bottom:12px;">Bộ sưu tập</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,4vw,52px);line-height:1.1;margin:0 0 8px;">Truyện tranh</h1>
+      <p style="font-size:13px;color:#555;margin:0;">Khám phá hơn 5,000 đầu sách được tuyển chọn kỹ lưỡng</p>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" placeholder="Tìm truyện, tác giả...">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="result-count">Hiển thị 1–12 / 248 kết quả</span>
+        <select class="sort-select">
+          <option>Mới nhất</option>
+          <option>Bán chạy</option>
+          <option>Giá tăng dần</option>
+          <option>Giá giảm dần</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="product-grid">
+      <!-- Card 1 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-hot">Hot</span></div>
+        <div class="card-genre">Shounen</div>
+        <div class="card-title">Naruto — Tập 72</div>
+        <div class="card-author">Masashi Kishimoto</div>
+        <div class="card-price">35.000đ<span class="card-price-old">45.000đ</span></div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 2 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-hot">Hot</span></div>
+        <div class="card-genre">Shounen</div>
+        <div class="card-title">One Piece — Tập 105</div>
+        <div class="card-author">Eiichiro Oda</div>
+        <div class="card-price">35.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 3 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-sale">Sale</span></div>
+        <div class="card-genre">Shounen</div>
+        <div class="card-title">Demon Slayer — Tập 23</div>
+        <div class="card-author">Koyoharu Gotouge</div>
+        <div class="card-price">38.000đ<span class="card-price-old">45.000đ</span></div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 4 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div></div>
+        <div class="card-genre">Seinen</div>
+        <div class="card-title">Attack on Titan — Final</div>
+        <div class="card-author">Hajime Isayama</div>
+        <div class="card-price">42.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 5 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-hot">Hot</span></div>
+        <div class="card-genre">Shounen</div>
+        <div class="card-title">Jujutsu Kaisen — Tập 26</div>
+        <div class="card-author">Gege Akutami</div>
+        <div class="card-price">35.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 6 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div></div>
+        <div class="card-genre">Shounen</div>
+        <div class="card-title">Dragon Ball — Tập 42</div>
+        <div class="card-author">Akira Toriyama</div>
+        <div class="card-price">32.000đ<span class="card-price-old">40.000đ</span></div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 7 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div></div>
+        <div class="card-genre">Mystery</div>
+        <div class="card-title">Conan — Tập 103</div>
+        <div class="card-author">Gosho Aoyama</div>
+        <div class="card-price">30.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 8 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-hot">Hot</span></div>
+        <div class="card-genre">Comedy</div>
+        <div class="card-title">Spy x Family — Tập 12</div>
+        <div class="card-author">Tatsuya Endo</div>
+        <div class="card-price">38.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 9 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-new">Mới</span></div>
+        <div class="card-genre">Sports</div>
+        <div class="card-title">Blue Lock — Tập 28</div>
+        <div class="card-author">Muneyuki Kaneshiro</div>
+        <div class="card-price">38.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 10 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-new">Mới</span></div>
+        <div class="card-genre">Seinen</div>
+        <div class="card-title">Chainsaw Man — Tập 17</div>
+        <div class="card-author">Tatsuki Fujimoto</div>
+        <div class="card-price">40.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 11 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-new">Mới</span></div>
+        <div class="card-genre">Shounen</div>
+        <div class="card-title">Kaiju No.8 — Tập 11</div>
+        <div class="card-author">Naoya Matsumoto</div>
+        <div class="card-price">38.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <!-- Card 12 -->
+      <a href="product-detail.html" class="card">
+        <div class="card-cover"><div class="card-cover-inner">📖</div><span class="badge badge-new">Mới</span></div>
+        <div class="card-genre">Sci-fi</div>
+        <div class="card-title">Dandadan — Tập 14</div>
+        <div class="card-author">Yukinobu Tatsu</div>
+        <div class="card-price">42.000đ</div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="page-btn">‹</div>
+      <div class="page-btn active">1</div>
+      <div class="page-btn">2</div>
+      <div class="page-btn">3</div>
+      <div class="page-btn" style="letter-spacing:0.1em">…</div>
+      <div class="page-btn">21</div>
+      <div class="page-btn">›</div>
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid #222;padding:40px 48px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.08em;">Manga<span style="color:#c9a84c">Shop</span></div>
+  <div style="display:flex;gap:32px;">
+    <a href="products.html" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;transition:color .2s;">Truyện tranh</a>
+    <a href="#" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;">Giới thiệu</a>
+    <a href="#" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;">Giao hàng</a>
+    <a href="#" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;">Liên hệ</a>
+  </div>
+  <div style="font-size:11px;color:#555;">© 2025 MangaShop</div>
+</footer>
+
+<script>
+const hdr=document.getElementById('hdr');
+window.addEventListener('scroll',()=>{
+  if(window.scrollY>40){hdr.style.borderBottomColor='#222';hdr.style.background='rgba(14,14,14,.92)';hdr.style.backdropFilter='blur(12px)';}
+  else{hdr.style.borderBottomColor='transparent';hdr.style.background='transparent';hdr.style.backdropFilter='none';}
+});
+</script>
+</body>
+</html>

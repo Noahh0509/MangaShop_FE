@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đặt hàng thành công — MangaShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;overflow-x:hidden}
+body{background:#0e0e0e;color:#e8e2d9;font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6}
+a{text-decoration:none;color:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@keyframes checkDraw{from{stroke-dashoffset:60}to{stroke-dashoffset:0}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}50%{box-shadow:0 0 32px 8px rgba(201,168,76,.12)}}
+
+#hdr{position:fixed;top:0;left:0;right:0;z-index:50;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid #222;background:rgba(14,14,14,.95);backdrop-filter:blur(12px)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.08em;color:#e8e2d9}.logo span{color:#c9a84c}
+.nav-link{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#888;transition:color .2s}.nav-link:hover{color:#e8e2d9}
+.btn-login{padding:8px 20px;border:1px solid #8a6d2f;color:#c9a84c;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:all .25s}.btn-login:hover{background:#c9a84c;color:#000}
+
+.page{padding-top:72px;min-height:100vh}
+
+/* STEPS */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;padding:20px 48px;border-bottom:1px solid #222;background:#0a0a0a}
+.step{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#444;padding:0 24px}
+.step.done{color:#c9a84c}
+.step-num{width:24px;height:24px;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:11px;border-radius:50%}
+.step.done .step-num{background:#c9a84c;border-color:#c9a84c;color:#000}
+.step-sep{width:48px;height:1px;background:#333}
+
+/* HERO */
+.complete-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 48px 60px;text-align:center}
+.check-circle{width:96px;height:96px;border:1px solid #8a6d2f;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 32px;animation:scaleIn .5s cubic-bezier(.34,1.56,.64,1) both,glowPulse 3s ease infinite 1s}
+.check-svg{stroke-dasharray:60;stroke-dashoffset:60;animation:checkDraw .5s .4s ease forwards}
+.complete-tag{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#c9a84c;margin-bottom:16px;animation:fadeUp .6s .2s ease both;opacity:0;animation-fill-mode:both}
+.complete-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,5vw,64px);line-height:1.1;margin:0 0 16px;animation:fadeUp .6s .3s ease both;opacity:0;animation-fill-mode:both}
+.complete-sub{font-size:14px;color:#888;max-width:440px;line-height:1.8;animation:fadeUp .6s .4s ease both;opacity:0;animation-fill-mode:both}
+
+/* ORDER CODE */
+.order-code-wrap{margin:32px auto 0;padding:20px 32px;border:1px solid #222;background:#0a0a0a;display:inline-flex;align-items:center;gap:16px;animation:fadeUp .6s .5s ease both;opacity:0;animation-fill-mode:both}
+.order-code-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#555}
+.order-code{font-family:'Cormorant Garamond',serif;font-size:22px;letter-spacing:.08em;color:#c9a84c}
+.copy-btn{padding:6px 14px;border:1px solid #333;background:transparent;color:#555;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}.copy-btn:hover{border-color:#8a6d2f;color:#c9a84c}
+
+/* DETAILS */
+.details-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:48px;max-width:1000px;margin:0 auto;animation:fadeUp .6s .5s ease both;opacity:0;animation-fill-mode:both}
+@media(max-width:700px){.details-wrap{grid-template-columns:1fr;padding:24px}}
+
+.detail-box{border:1px solid #222;padding:28px}
+.detail-box-title{font-family:'Cormorant Garamond',serif;font-size:20px;margin:0 0 20px;padding-bottom:16px;border-bottom:1px solid #222}
+.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #161616;font-size:13px}
+.detail-row:last-child{border-bottom:none}
+.detail-key{color:#555;flex-shrink:0;margin-right:16px}
+.detail-val{text-align:right;color:#e8e2d9}
+
+/* ORDER ITEMS */
+.order-items-box{border:1px solid #222;padding:28px;grid-column:1/-1}
+.order-items-title{font-family:'Cormorant Garamond',serif;font-size:20px;margin:0 0 20px;padding-bottom:16px;border-bottom:1px solid #222}
+.order-item-row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #161616}
+.order-item-row:last-child{border-bottom:none}
+.item-cov{width:48px;aspect-ratio:3/4;background:linear-gradient(135deg,#1a1a1a,#222);display:flex;align-items:center;justify-content:center;font-size:16px;opacity:.2;flex-shrink:0}
+.item-inf{flex:1}
+.item-ttl{font-family:'Cormorant Garamond',serif;font-size:17px;margin-bottom:2px}
+.item-meta-sm{font-size:11px;color:#555}
+.item-pr{font-size:14px;font-weight:500;color:#e8e2d9}
+
+/* TOTAL SUMMARY */
+.total-summary{border-top:1px solid #222;margin-top:16px;padding-top:16px;display:flex;justify-content:space-between;align-items:center}
+.total-label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.total-val{font-family:'Cormorant Garamond',serif;font-size:28px;color:#c9a84c}
+
+/* ACTIONS */
+.actions{display:flex;justify-content:center;gap:16px;padding:32px 48px 80px;animation:fadeUp .6s .7s ease both;opacity:0;animation-fill-mode:both}
+.btn-primary{padding:14px 36px;background:#c9a84c;color:#000;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;border:none;cursor:pointer;transition:all .25s}.btn-primary:hover{background:#e0bc5f;transform:translateY(-1px)}
+.btn-sec{padding:14px 36px;background:transparent;color:#888;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #222;cursor:pointer;transition:all .2s}.btn-sec:hover{border-color:#8a6d2f;color:#c9a84c}
+
+/* TRACK */
+.track-bar{background:#0a0a0a;border-top:1px solid #222;border-bottom:1px solid #222;padding:28px 48px;display:flex;align-items:center;justify-content:center;gap:0;margin:0 0 0}
+.track-step{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;flex:1;max-width:160px}
+.track-dot{width:12px;height:12px;border-radius:50%;border:1px solid #333;background:#0a0a0a;z-index:1}
+.track-step.done .track-dot{background:#c9a84c;border-color:#c9a84c}
+.track-step.active .track-dot{border-color:#c9a84c;box-shadow:0 0 0 3px rgba(201,168,76,.2)}
+.track-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#444;text-align:center}
+.track-step.done .track-label,.track-step.active .track-label{color:#c9a84c}
+.track-line{flex:1;height:1px;background:#222;max-width:80px}
+.track-step.done + .track-line{background:#c9a84c}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <a href="index.html" class="logo">Manga<span>Shop</span></a>
+  <nav style="display:flex;gap:40px;">
+    <a href="#" class="nav-link">Trang chủ</a>
+    <a href="products.html" class="nav-link">Truyện tranh</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <a href="cart.html" style="color:#888;transition:color .2s;">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M10 21a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+    </a>
+    <a href="profile.html" class="nav-link">Tài khoản</a>
+  </div>
+</header>
+
+<div class="page">
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step done"><div class="step-num">✓</div><span>Giỏ hàng</span></div>
+    <div class="step-sep" style="background:#c9a84c"></div>
+    <div class="step done"><div class="step-num">✓</div><span>Thông tin</span></div>
+    <div class="step-sep" style="background:#c9a84c"></div>
+    <div class="step done"><div class="step-num">✓</div><span>Thanh toán</span></div>
+    <div class="step-sep" style="background:#c9a84c"></div>
+    <div class="step done"><div class="step-num">✓</div><span>Hoàn tất</span></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="complete-hero">
+    <div class="check-circle">
+      <svg width="40" height="40" fill="none" viewBox="0 0 40 40">
+        <polyline class="check-svg" points="8,21 17,30 32,12" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="complete-tag">Cảm ơn bạn đã đặt hàng</div>
+    <h1 class="complete-title">Đặt hàng<br><em style="font-style:italic;color:#c9a84c">thành công!</em></h1>
+    <p class="complete-sub">Email xác nhận đã được gửi đến <strong style="color:#e8e2d9">khoa@gmail.com</strong>. Chúng tôi sẽ xử lý đơn hàng trong vòng 24 giờ.</p>
+    <div class="order-code-wrap">
+      <div>
+        <div class="order-code-label">Mã đơn hàng</div>
+        <div class="order-code">#MS-2025-004821</div>
+      </div>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('#MS-2025-004821');this.textContent='✓ Đã sao chép'">Sao chép</button>
+    </div>
+  </div>
+
+  <!-- TRACKING -->
+  <div class="track-bar">
+    <div class="track-step done">
+      <div class="track-dot"></div>
+      <div class="track-label">Đặt hàng</div>
+    </div>
+    <div class="track-line" style="background:#c9a84c"></div>
+    <div class="track-step active">
+      <div class="track-dot"></div>
+      <div class="track-label">Xác nhận</div>
+    </div>
+    <div class="track-line"></div>
+    <div class="track-step">
+      <div class="track-dot"></div>
+      <div class="track-label">Đóng gói</div>
+    </div>
+    <div class="track-line"></div>
+    <div class="track-step">
+      <div class="track-dot"></div>
+      <div class="track-label">Vận chuyển</div>
+    </div>
+    <div class="track-line"></div>
+    <div class="track-step">
+      <div class="track-dot"></div>
+      <div class="track-label">Đã giao</div>
+    </div>
+  </div>
+
+  <!-- DETAILS -->
+  <div class="details-wrap">
+    <div class="detail-box">
+      <div class="detail-box-title">Thông tin giao hàng</div>
+      <div class="detail-row"><span class="detail-key">Người nhận</span><span class="detail-val">Trần Minh Khoa</span></div>
+      <div class="detail-row"><span class="detail-key">Điện thoại</span><span class="detail-val">0901 234 567</span></div>
+      <div class="detail-row"><span class="detail-key">Email</span><span class="detail-val">khoa@gmail.com</span></div>
+      <div class="detail-row"><span class="detail-key">Địa chỉ</span><span class="detail-val">123 Lê Lợi, Quận 1, TP.HCM</span></div>
+      <div class="detail-row"><span class="detail-key">Dự kiến giao</span><span class="detail-val" style="color:#4a9968">27–29 tháng 3, 2025</span></div>
+    </div>
+
+    <div class="detail-box">
+      <div class="detail-box-title">Thông tin thanh toán</div>
+      <div class="detail-row"><span class="detail-key">Phương thức</span><span class="detail-val">Thanh toán khi nhận hàng</span></div>
+      <div class="detail-row"><span class="detail-key">Tạm tính</span><span class="detail-val">148.000đ</span></div>
+      <div class="detail-row"><span class="detail-key">Vận chuyển</span><span class="detail-val" style="color:#4a9968">Miễn phí</span></div>
+      <div class="detail-row"><span class="detail-key">Giảm giá</span><span class="detail-val" style="color:#4a9968">−14.800đ</span></div>
+      <div class="detail-row"><span class="detail-key">Tổng cộng</span><span class="detail-val" style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#c9a84c">133.200đ</span></div>
+    </div>
+
+    <div class="order-items-box">
+      <div class="order-items-title">Sản phẩm đã đặt</div>
+      <div class="order-item-row">
+        <div class="item-cov">📖</div>
+        <div class="item-inf"><div class="item-ttl">Jujutsu Kaisen — Tập 26</div><div class="item-meta-sm">Gege Akutami · Shounen · ×2</div></div>
+        <div class="item-pr">70.000đ</div>
+      </div>
+      <div class="order-item-row">
+        <div class="item-cov">📖</div>
+        <div class="item-inf"><div class="item-ttl">Chainsaw Man — Tập 17</div><div class="item-meta-sm">Tatsuki Fujimoto · Seinen · ×1</div></div>
+        <div class="item-pr">40.000đ</div>
+      </div>
+      <div class="order-item-row">
+        <div class="item-cov">📖</div>
+        <div class="item-inf"><div class="item-ttl">Spy x Family — Tập 12</div><div class="item-meta-sm">Tatsuya Endo · Comedy · ×1</div></div>
+        <div class="item-pr">38.000đ</div>
+      </div>
+      <div class="total-summary">
+        <div class="total-label">Tổng thanh toán</div>
+        <div class="total-val">133.200đ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn-sec" onclick="window.location='profile.html'">Xem đơn hàng của tôi</button>
+    <button class="btn-primary" onclick="window.location='products.html'">Tiếp tục mua sắm →</button>
+  </div>
+</div>
+
+<footer style="border-top:1px solid #222;padding:40px 48px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.08em;">Manga<span style="color:#c9a84c">Shop</span></div>
+  <div style="display:flex;gap:32px;"><a href="products.html" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;">Truyện tranh</a><a href="#" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;">Giới thiệu</a><a href="#" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#555;">Giao hàng</a></div>
+  <div style="font-size:11px;color:#555;">© 2025 MangaShop</div>
+</footer>
+</body>
+</html>

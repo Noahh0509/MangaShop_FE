@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-
+const API_URL = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
-    baseURL: 'https://mangashop-rnfc.onrender.com',
+   // baseURL: 'https://mangashop-rnfc.onrender.com',
+   baseURL: API_URL,
     withCredentials: true, // gửi cookie refreshToken tự động
 });
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-const API_URL = 'https://mangashop-rnfc.onrender.com/api/users/public-users';
+//const API_URL = 'https://mangashop-rnfc.onrender.com/api/users/public-users';
+const API_URL = 'http://localhost:5000/api/users/public-users';
 const BACKEND_URL = 'https://mangashop-rnfc.onrender.com/api/users/public-users';
 const BE_API='https://mangashop-rnfc.onrender.com/api-docs/';
 export default function UserListSection() {
