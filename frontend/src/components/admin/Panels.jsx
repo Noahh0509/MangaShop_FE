@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/axiosInstance';
 
-// 1. Quản lý Sản phẩm (Sẽ hiển thị mặc định)
 export const ProductsPanel = ({ onOpenModal }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,14 +9,25 @@ export const ProductsPanel = ({ onOpenModal }) => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      // Gọi API lấy toàn bộ sản phẩm cho Admin
       const res = await api.get(`/api/products/admin-all?search=${searchTerm}`);
       const data = res.data.data || res.data;
-      setProducts(data);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Lỗi lấy danh sách sản phẩm:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ Hàm xóa sản phẩm
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Xác nhận tiêu hủy cuốn "${name}" khỏi kho?`)) {
+      try {
+        await api.delete(`/api/products/${id}`);
+        fetchProducts(); // Load lại danh sách
+      } catch (err) {
+        alert("Lỗi khi xóa: " + (err.response?.data?.message || err.message));
+      }
     }
   };
 
@@ -37,51 +47,20 @@ export const ProductsPanel = ({ onOpenModal }) => {
     );
   }
 
-  const handleUploadImage = () => {
-    // Gọi cái widget đã nhúng từ index.html
-    const myWidget = window.cloudinary.createUploadWidget(
-      {
-        cloudName: 'durcb5nfr', // Cloud name của Tuan
-        uploadPreset: 'mangashop_preset', // Preset mangashop_preset của Tuan
-        folder: 'products', // Tự chui vào folder products cho gọn
-        sources: ['local', 'url', 'camera'], // Nguồn lấy ảnh
-        multiple: false, // Admin chỉ cần 1 ảnh bìa thôi
-        cropping: true, // Cho phép cắt ảnh theo tỷ lệ
-        croppingAspectRatio: 0.7, // Tỷ lệ bìa truyện 5:7 (~0.7)
-        showSkipCropButton: false,
-        theme: 'minimal', // Giao diện tối giản sang trọng
-      },
-      (error, result) => {
-        if (!error && result && result.event === "success") {
-          console.log("Link ảnh xịn đây Tuan ơi: ", result.info.secure_url);
-          
-          // Sau khi có link ảnh, bạn có thể:
-          // 1. Alert cho vui: alert("Upload thành công!");
-          // 2. Hoặc cập nhật vào State để chuẩn bị Lưu Sản Phẩm
-        }
-      }
-    );
-    
-    myWidget.open(); // Mở khung lên!
-  };
-  
   return (
     <div className="animate-[fadeUp_0.5s_ease_both]">
-      {/* Search Bar */}
       <div className="flex items-center justify-between mb-6 gap-3">
         <div className="relative flex-1 max-w-[300px]">
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm tên truyện..." 
+          <input
+            type="text"
+            placeholder="Tìm kiếm tên truyện..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-transparent border border-[#1a1a1a] text-[#e8e2d9] text-xs py-[10px] pr-10 pl-4 outline-none focus:border-[#c9a84c] transition-all placeholder-[#333]" 
+            className="w-full bg-transparent border border-[#1a1a1a] text-[#e8e2d9] text-xs py-[10px] pr-10 pl-4 outline-none focus:border-[#c9a84c] transition-all placeholder-[#333]"
           />
-          <svg className="absolute right-3 top-1/2 -translate-y-1/2 text-[#444]" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
         </div>
       </div>
 
-      {/* Table List */}
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-[#1a1a1a]">
@@ -95,19 +74,35 @@ export const ProductsPanel = ({ onOpenModal }) => {
         </thead>
         <tbody>
           {products.map((item, index) => {
-            const imgUrl = item.images?.find(i => i.isPrimary)?.url || item.images?.[0]?.url;
+            // ✅ Fix lỗi link dài có dấu ba chấm và tìm ảnh chính
+            let rawUrl = item.images?.find(i => i.isPrimary)?.url || item.images?.[0]?.url || "";
+
+            // Tối ưu ảnh Cloudinary: tự động nén và resize về đúng kích thước hiển thị
+            // Nó sẽ thêm 'f_auto,q_auto,w_200' vào link nếu là link Cloudinary
+            const optimizedUrl = rawUrl.includes("cloudinary.com")
+              ? rawUrl.replace("/upload/", "/upload/f_auto,q_auto,w_200/")
+              : rawUrl.replace(/\.\.\./g, "").trim();
+            const cleanUrl = rawUrl.replace(/\.\.\./g, "").trim();
+
             return (
               <tr key={item._id} className="hover:bg-[#0c0c0c] transition-colors group">
                 <td className="p-4 border-b border-[#111] text-[12px] text-[#333]">
                   {index + 1 < 10 ? `0${index + 1}` : index + 1}
                 </td>
                 <td className="p-4 border-b border-[#111]">
-                  <div className="w-10 h-14 bg-[#111] border border-[#222] overflow-hidden">
-                    {imgUrl ? (
-                      <img src={imgUrl} alt="" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[18px] opacity-10">📖</div>
-                    )}
+                  <div className="w-10 h-14 bg-[#111] border border-[#222] overflow-hidden flex items-center justify-center">
+                    {cleanUrl ? (
+                      <img
+                        src={cleanUrl}
+                        alt=""
+                        className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                    ) : null}
+                    <div style={{ display: cleanUrl ? 'none' : 'block' }} className="text-[18px] opacity-10">📖</div>
                   </div>
                 </td>
                 <td className="p-4 border-b border-[#111]">
@@ -124,8 +119,13 @@ export const ProductsPanel = ({ onOpenModal }) => {
                 </td>
                 <td className="p-4 border-b border-[#111]">
                   <div className="flex gap-3">
-                    <button onClick={() => onOpenModal(item)} className="text-[10px] uppercase tracking-widest text-[#555] hover:text-[#c9a84c] transition-colors">Sửa</button>
-                    <button className="text-[10px] uppercase tracking-widest text-[#555] hover:text-red-600 transition-colors">Xóa</button>
+                    <button onClick={() => onOpenModal(item)} className="text-[10px] uppercase tracking-widest text-[#555] hover:text-[#c9a84c] transition-colors font-medium">Sửa</button>
+                    <button
+                      onClick={() => handleDelete(item._id, item.name)}
+                      className="text-[10px] uppercase tracking-widest text-[#555] hover:text-red-600 transition-colors font-medium"
+                    >
+                      Xóa
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -133,26 +133,9 @@ export const ProductsPanel = ({ onOpenModal }) => {
           })}
         </tbody>
       </table>
-
-      {products.length === 0 && !loading && (
-        <div className="text-center py-20 text-[#333] text-[11px] uppercase tracking-[0.2em]">
-          Không tìm thấy cuốn truyện nào phù hợp
-        </div>
-      )}
     </div>
   );
 };
 
-// 2. Quản lý Người dùng (Mẫu)
-export const UsersPanel = () => (
-  <div className="p-20 text-center animate-[fadeUp_0.5s_ease_both]">
-    <p className="text-[#333] text-[11px] uppercase tracking-[0.2em]">Đang phát triển danh sách thành viên...</p>
-  </div>
-);
-
-// 3. Quản lý Đơn hàng (Mẫu)
-export const OrdersPanel = () => (
-  <div className="p-20 text-center animate-[fadeUp_0.5s_ease_both]">
-    <p className="text-[#333] text-[11px] uppercase tracking-[0.2em]">Chưa có dữ liệu đơn hàng mới...</p>
-  </div>
-);
+export const UsersPanel = () => <div className="p-20 text-center text-[#333] text-[11px] uppercase tracking-[0.2em]">Đang phát triển danh sách thành viên...</div>;
+export const OrdersPanel = () => <div className="p-20 text-center text-[#333] text-[11px] uppercase tracking-[0.2em]">Chưa có dữ liệu đơn hàng mới...</div>;
