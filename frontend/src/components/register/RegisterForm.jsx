@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RegisterInput from './RegisterInput';
 
-const API_URL = 'https://mangashop-rnfc.onrender.com/api/users/register';
+const API_URL = `${import.meta.env.VITE_API_URL}/api/users/register`;
 
 export default function RegisterForm() {
     const navigate = useNavigate();
@@ -28,17 +28,25 @@ export default function RegisterForm() {
 
     const validate = () => {
         const errs = {};
-        if (!form.username) errs.username = 'Vui lòng nhập tên đăng nhập.';
-        else if (form.username.length < 3) errs.username = 'Tên đăng nhập tối thiểu 3 ký tự.';
+        if (!form.username)
+            errs.username = 'Vui lòng nhập tên đăng nhập.';
+        else if (form.username.length < 3)
+            errs.username = 'Tên đăng nhập tối thiểu 3 ký tự.';
 
-        if (!form.email) errs.email = 'Vui lòng nhập email.';
-        else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Email không hợp lệ.';
+        if (!form.email)
+            errs.email = 'Vui lòng nhập email.';
+        else if (!/\S+@\S+\.\S+/.test(form.email))
+            errs.email = 'Email không hợp lệ.';
 
-        if (!form.password) errs.password = 'Vui lòng nhập mật khẩu.';
-        else if (form.password.length < 6) errs.password = 'Mật khẩu tối thiểu 6 ký tự.';
+        if (!form.password)
+            errs.password = 'Vui lòng nhập mật khẩu.';
+        else if (form.password.length < 6)
+            errs.password = 'Mật khẩu tối thiểu 6 ký tự.';
 
-        if (!form.confirmPassword) errs.confirmPassword = 'Vui lòng xác nhận mật khẩu.';
-        else if (form.password !== form.confirmPassword) errs.confirmPassword = 'Mật khẩu xác nhận không khớp.';
+        if (!form.confirmPassword)
+            errs.confirmPassword = 'Vui lòng xác nhận mật khẩu.';
+        else if (form.password !== form.confirmPassword)
+            errs.confirmPassword = 'Mật khẩu xác nhận không khớp.';
 
         return errs;
     };
@@ -58,26 +66,29 @@ export default function RegisterForm() {
                 ...(form.phone    && { phone:    form.phone }),
             };
 
-            // DÙNG api MÀ CHÚNG TA ĐÃ CẤU HÌNH Ở ĐÂY!
-            // Cực kỳ gọn gàng, không cần khai báo headers hay API_URL dài dòng
-            const res = await api.post('/users/register', payload);
+            const res = await fetch(API_URL, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload),
+            });
 
-            // Thành công → sang LoginPage (với React, axios tự parse json nên không cần res.json() nữa)
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data.message || 'Đăng ký thất bại.');
+                return;
+            }
+
+            // Thành công → sang LoginPage
             navigate('/login', { state: { registered: true } });
 
-        } catch (err) {
-            // Bắt lỗi từ server trả về (nếu email trùng, user trùng...)
-            if (err.response && err.response.data) {
-                setError(err.response.data.message || 'Đăng ký thất bại.');
-            } else {
-                setError('Không thể kết nối máy chủ. Vui lòng thử lại.');
-            }
+        } catch {
+            setError('Không thể kết nối máy chủ. Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }
     };
 
-    // GIỮ NGUYÊN PHẦN RETURN BÊN DƯỚI CỦA BẠN
     return (
         <div className="w-full max-w-[440px]">
 
