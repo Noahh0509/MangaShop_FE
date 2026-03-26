@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RegisterInput from './RegisterInput';
 
-const API_URL = 'https://mangashop-rnfc.onrender.com/api/users/register';
+const API_URL = `${import.meta.env.VITE_API_URL}/api/users/register`;
 
 export default function RegisterForm() {
     const navigate = useNavigate();
