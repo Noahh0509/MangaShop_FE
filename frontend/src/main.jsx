@@ -7,6 +7,8 @@ import { AuthProvider } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ProductsPage from './pages/ProductsPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 
 const router = createBrowserRouter([
     {
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
         path: '/register',
         element: <RegisterPage />,
     },
+    {
+        path: '/products',
+        element: <ProductsPage />
+    },
+    {
+        path: '/products/:slug',
+        element: <ProductDetailPage />
+    }
 ]);
 
 createRoot(document.getElementById('root')).render(
