@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AdminSidebar from '../components/admin/AdminSidebar';
-import AdminHeader from '../components/layout/Header';
+import AdminNavbar from '../components/admin/AdminNavbar'; 
 import StatsGrid from '../components/admin/StatsGrid';
 import AdminTabs from '../components/admin/AdminTabs';
 import { ProductsPanel, UsersPanel, OrdersPanel } from '../components/admin/Panels';
@@ -17,7 +17,7 @@ export default function AdminPage() {
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="flex-1 overflow-y-auto">
-        <AdminHeader 
+        <AdminNavbar 
           activeTab={activeTab} 
           onAddProduct={() => setProductModalOpen(true)}
           onAddUser={() => setUserModalOpen(true)}

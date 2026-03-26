@@ -7,7 +7,8 @@ import { AuthProvider } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import AdminPage from './pages/AdminPage';  
+import AdminPage from './pages/AdminPage';
+import AdminRoute from './components/admin/AdminRoute';
 
 
 const router = createBrowserRouter([
@@ -24,8 +25,15 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
     },
     {
-        path: '/admin',
-        element: <AdminPage />,
+        element: <AdminRoute />, // Bọc bảo vệ ở đây
+        children: [
+            {
+                path: '/admin',
+                element: <AdminPage />,
+            },
+            // Sau này bạn có thêm trang /admin/settings hay /admin/logs 
+            // thì cứ cho vào trong children này là nó tự bảo vệ hết.
+        ]
     },
 ]);
 
