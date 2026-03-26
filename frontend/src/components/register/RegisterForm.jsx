@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RegisterInput from './RegisterInput';
-// Quan trọng: Phải import cái này vào
-import api from '../../services/axiosInstance'; 
+
+const API_URL = 'https://mangashop-rnfc.onrender.com/api/users/register';
 
 export default function RegisterForm() {
     const navigate = useNavigate();
