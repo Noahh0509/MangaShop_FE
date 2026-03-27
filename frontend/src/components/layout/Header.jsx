@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react'; // Thêm useContext
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext'; // Nhớ import AuthContext của sếp
 
 export default function Header() {
+    const { user, isAdmin, logout } = useContext(AuthContext); // Lấy isAdmin từ Context
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
-    const isLoggedIn = !!localStorage.getItem('accessToken');
 
-    // Giả sử cart count lưu trong localStorage, sau này thay bằng context/redux
+    // Dùng isAdmin từ context sẽ chuẩn hơn là check thủ công
+    const isLoggedIn = !!user; 
     const cartCount = JSON.parse(localStorage.getItem('cart') || '[]').length;
 
     useEffect(() => {
@@ -18,7 +20,6 @@ export default function Header() {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    // Đóng dropdown khi click ra ngoài
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -30,7 +31,7 @@ export default function Header() {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('accessToken');
+        logout(); // Gọi hàm logout từ context để xóa state sạch sẽ
         setDropdownOpen(false);
         navigate('/login');
     };
@@ -63,8 +64,6 @@ export default function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-6">
-
-                {/* Cart với badge */}
                 <Link to="/cart" className="relative text-[#888] hover:text-[#c9a84c] transition-colors">
                     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                         <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M10 21a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z"/>
@@ -78,32 +77,39 @@ export default function Header() {
                 </Link>
 
                 {isLoggedIn ? (
-                    // Avatar + Dropdown
                     <div className="relative" ref={dropdownRef}>
                         <button
                             onClick={() => setDropdownOpen(!dropdownOpen)}
                             className="flex items-center gap-2 text-[#888] hover:text-[#e8e2d9] transition-colors bg-transparent border-none cursor-pointer"
                         >
-                            {/* Avatar placeholder */}
                             <div className="w-8 h-8 rounded-full bg-[#222] border border-[#333] flex items-center justify-center hover:border-[#c9a84c] transition-colors">
                                 <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
                                 </svg>
                             </div>
-                            {/* Chevron */}
                             <svg width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
                                 className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
 
-                        {/* Dropdown menu */}
                         {dropdownOpen && (
-                            <div className="absolute right-0 top-[calc(100%+12px)] w-48 bg-[#161616] border border-[#222] shadow-xl z-50">
-                                {/* Mũi tên nhỏ */}
+                            <div className="absolute right-0 top-[calc(100%+12px)] w-48 bg-[#161616] border border-[#222] shadow-xl z-50 animate-[fadeUp_0.3s_ease_both]">
                                 <div className="absolute -top-1.5 right-3 w-3 h-3 bg-[#161616] border-l border-t border-[#222] rotate-45" />
 
                                 <div className="py-1">
+                                    {/* ✅ ADMIN ONLY: Cửa quay về dashboard */}
+                                    {isAdmin && (
+                                        <Link to="/admin"
+                                            onClick={() => setDropdownOpen(false)}
+                                            className="flex items-center gap-3 px-4 py-3 text-[11px] font-bold tracking-[0.12em] uppercase text-[#c9a84c] hover:bg-[#c9a84c] hover:text-black transition-all no-underline">
+                                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                                            </svg>
+                                            Quản trị viên
+                                        </Link>
+                                    )}
+
                                     <Link to="/profile"
                                         onClick={() => setDropdownOpen(false)}
                                         className="flex items-center gap-3 px-4 py-3 text-[11px] tracking-[0.12em] uppercase text-[#888] hover:text-[#e8e2d9] hover:bg-[#1e1e1e] transition-colors no-underline">
@@ -143,7 +149,6 @@ export default function Header() {
                     </Link>
                 )}
 
-                {/* Hamburger mobile */}
                 <button className="md:hidden text-[#888] bg-transparent border-none"
                     onClick={() => setMenuOpen(!menuOpen)}>
                     <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -155,7 +160,7 @@ export default function Header() {
 
             {/* Mobile menu */}
             {menuOpen && (
-                <div className="absolute top-[72px] left-0 right-0 bg-[#161616] border-b border-[#222] px-6 py-5 flex flex-col gap-5 md:hidden">
+                <div className="absolute top-[72px] left-0 right-0 bg-[#161616] border-b border-[#222] px-6 py-5 flex flex-col gap-5 md:hidden animate-[fadeDown_0.3s_ease_both]">
                     {[['/', 'Trang chủ'], ['/products', 'Truyện tranh'], ['/about', 'Về chúng tôi']].map(([to, label]) => (
                         <Link key={to} to={to} onClick={() => setMenuOpen(false)}
                             className="text-[11px] tracking-[0.14em] uppercase text-[#888] hover:text-[#c9a84c] no-underline transition-colors">
@@ -164,6 +169,13 @@ export default function Header() {
                     ))}
                     {isLoggedIn && (
                         <>
+                            {/* ✅ ADMIN MOBILE: Link về Dashboard */}
+                            {isAdmin && (
+                                <Link to="/admin" onClick={() => setMenuOpen(false)}
+                                    className="text-[11px] tracking-[0.14em] uppercase text-[#c9a84c] font-bold no-underline transition-colors border-t border-[#222] pt-4">
+                                    Quản trị viên
+                                </Link>
+                            )}
                             <Link to="/profile" onClick={() => setMenuOpen(false)}
                                 className="text-[11px] tracking-[0.14em] uppercase text-[#888] hover:text-[#c9a84c] no-underline transition-colors">
                                 Tài khoản
