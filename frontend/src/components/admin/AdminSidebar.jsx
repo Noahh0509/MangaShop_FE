@@ -3,8 +3,33 @@ import { Link } from 'react-router-dom'; // Nhớ import Link
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    { id: 'products', label: 'Sản phẩm', icon: <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /> },
-    { id: 'orders', label: 'Đơn hàng', icon: <><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></> },
+    {
+      id: 'products',
+      label: 'Sản phẩm',
+      icon: <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    },
+    {
+      id: 'orders',
+      label: 'Đơn hàng',
+      icon: (
+        <>
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+          <path d="M3 6h18" />
+          <path d="M16 10a4 4 0 0 1-8 0" />
+        </>
+      )
+    },
+    {
+      id: 'promotions', // 🎯 ID đã được đổi lại để không bị trùng
+      label: 'Khuyến mãi',
+      // 🏷️ Icon cái Tag Khuyến mãi cực đẹp
+      icon: (
+        <>
+          <path d="M12.5 22l-9.5-9.5V3h9.5l9.5 9.5a3.5 3.5 0 0 1-5 5l-4.5 4.5z" />
+          <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+        </>
+      )
+    },
   ];
 
   return (

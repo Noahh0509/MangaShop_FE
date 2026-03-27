@@ -4,8 +4,8 @@ import AdminNavbar from '../components/admin/AdminNavbar';
 import StatsGrid from '../components/admin/StatsGrid';
 import AdminTabs from '../components/admin/AdminTabs';
 import { ProductsPanel, UsersPanel, OrdersPanel } from '../components/admin/Panels';
-import AddProductModal from '../components/admin/AddProductModal'; 
-
+import AddProductModal from '../components/admin/AddProductModal';
+import { PromotionsPanel} from '../components/admin/PromotionPanel';
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('products');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -37,7 +37,7 @@ export default function AdminPage() {
         <AdminNavbar
           activeTab={activeTab}
           onAddProduct={handleOpenAdd} // Dùng hàm handleOpenAdd mới
-          onAddUser={() => {}}
+          onAddUser={() => { }}
         />
 
         <div className="p-[32px_40px] animate-[fadeUp_0.5s_ease_both]">
@@ -46,11 +46,12 @@ export default function AdminPage() {
 
           {/* TRUYỀN HÀM handleOpenEdit VÀO PANEL */}
           {activeTab === 'products' && (
-            <ProductsPanel onOpenModal={handleOpenEdit} /> 
+            <ProductsPanel onOpenModal={handleOpenEdit} />
           )}
-          
-          {activeTab === 'users' && <UsersPanel onOpenModal={() => {}} />}
+
+          {activeTab === 'users' && <UsersPanel onOpenModal={() => { }} />}
           {activeTab === 'orders' && <OrdersPanel />}
+          {activeTab === 'promotions' && <PromotionsPanel />}
         </div>
       </main>
 

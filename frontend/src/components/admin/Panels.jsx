@@ -62,12 +62,12 @@ export const ProductsPanel = ({ onOpenModal }) => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // Chỉ gọi API khi thực sự có thay đổi hoặc xóa trắng
-      fetchProducts(1);
+      fetchProducts(currentPage);
     }, 500);
 
     // Nếu gõ chữ tiếp theo trước 500ms, nó sẽ HỦY cái lịch cũ đi
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
   // Reset về trang 1 khi người dùng gõ tìm kiếm mới
   useEffect(() => {
@@ -83,8 +83,18 @@ export const ProductsPanel = ({ onOpenModal }) => {
     );
   }
 
+  const renderLoading = () => (
+    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-10 flex items-center justify-center transition-all duration-500">
+      <div className="flex flex-col items-center">
+        <div className="w-6 h-6 border-2 border-[#c9a84c] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-[9px] text-[#c9a84c] uppercase tracking-[0.2em] mt-3">Đang truy xuất...</p>
+      </div>
+    </div>
+  );
+
+
   return (
-    <div className="animate-[fadeUp_0.5s_ease_both]">
+    <div className="relative animate-fade-in">
       {/* Thanh tìm kiếm */}
       <div className="flex items-center justify-between mb-6 gap-3">
         <div className="relative flex-1 max-w-[300px]">
@@ -92,7 +102,10 @@ export const ProductsPanel = ({ onOpenModal }) => {
             type="text"
             placeholder="Tìm kiếm tên truyện..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // 🎯 Gõ tìm kiếm phát là nhảy về trang 1 luôn cho chắc
+            }}
             className="w-full bg-transparent border border-[#1a1a1a] text-[#e8e2d9] text-xs py-[10px] pr-10 pl-4 outline-none focus:border-[#c9a84c] transition-all placeholder-[#333]"
           />
         </div>

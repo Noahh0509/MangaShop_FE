@@ -71,8 +71,7 @@ export const SuperAdminPanel = () => {
       {/* Header - Giữ nguyên */}
       <div className="flex justify-between items-center mb-16">
         <div>
-          <h1 className="text-5xl font-black tracking-tighter text-[#c9a84c] uppercase italic leading-none">Master Control</h1>
-          <p className="text-[#555] text-sm uppercase tracking-[0.4em] mt-4 font-medium">Hệ thống quản trị tối cao</p>
+          <h1 className="text-5xl font-black tracking-tighter text-[#c9a84c] uppercase italic leading-none">Hệ thống quản trị</h1>
         </div>
         <button onClick={() => navigate('/')} className="flex items-center gap-3 px-8 py-4 border border-[#333] hover:border-[#c9a84c] text-xs uppercase tracking-[0.2em] text-[#888] hover:text-[#c9a84c] transition-all duration-500 bg-transparent rounded-sm group">
           <span className="text-lg group-hover:-translate-x-2 transition-transform">←</span> Quay lại cửa hàng
@@ -121,7 +120,6 @@ export const SuperAdminPanel = () => {
                       className="bg-[#080808] text-[#c9a84c] border border-[#333] px-3 py-2 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-[#c9a84c] rounded cursor-pointer transition-colors"
                     >
                       <option value="customer">Customer</option>
-                      <option value="staff">Staff</option>
                       <option value="admin">Admin</option>
                       <option value="super_admin">Super Admin</option>
                     </select>
