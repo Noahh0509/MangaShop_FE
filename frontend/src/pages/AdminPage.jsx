@@ -6,16 +6,21 @@ import AdminTabs from '../components/admin/AdminTabs';
 import { ProductsPanel, UsersPanel, OrdersPanel } from '../components/admin/Panels';
 import { ProductModal } from '../components/admin/Modals';
 
+// --- BƯỚC 1: IMPORT KHUNG CHAT AI ---
+import AdminAIChat from '../components/admin/AdminAIChat'; 
+
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('products');
   const [isProductModalOpen, setProductModalOpen] = useState(false);
   const [isUserModalOpen, setUserModalOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#080808] text-[#e8e2d9] font-['DM_Sans'] font-light">
+    <div className="flex min-h-screen bg-[#080808] text-[#e8e2d9] font-['DM_Sans'] font-light relative">
       
+      {/* Thanh Sidebar bên trái */}
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
+      {/* Nội dung chính bên phải */}
       <main className="flex-1 overflow-y-auto">
         <AdminNavbar 
           activeTab={activeTab} 
@@ -34,9 +39,14 @@ export default function AdminPage() {
         </div>
       </main>
 
-      {/* Modals */}
+      {/* --- BƯỚC 2: ĐẶT KHUNG CHAT AI Ở ĐÂY --- */}
+      {/* Nó sẽ luôn nằm cố định ở góc dưới bên phải màn hình */}
+      <AdminAIChat />
+
+      {/* Các Modals quản trị */}
       <ProductModal isOpen={isProductModalOpen} onClose={() => setProductModalOpen(false)} />
       {/* <UserModal isOpen={isUserModalOpen} onClose={() => setUserModalOpen(false)} /> */}
+      
     </div>
   );
 }
