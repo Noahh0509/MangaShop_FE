@@ -5,8 +5,9 @@ import { AuthContext } from '../../context/AuthContext';
 export default function AdminRoute() {
   const { user, loading } = useContext(AuthContext);
 
-  // 1. Khi đang check xem user đã đăng nhập chưa (loading từ AuthContext)
-  // Hiển thị một màn hình chờ nhỏ để tránh bị văng ra Login nhầm
+  // 1. PHẢI ĐỢI LOADING XONG HOÀN TOÀN
+  // Nếu không có cái này, React sẽ chạy xuống bước 2, thấy user = null (do chưa load xong) 
+  // rồi đá sếp về /login hoặc / ngay lập tức.
   if (loading) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center bg-[#080808]">
@@ -15,17 +16,17 @@ export default function AdminRoute() {
     );
   }
 
-  // 2. Nếu không có user (chưa đăng nhập) -> Đá về Login
+  // 2. SAU KHI LOADING XONG MỚI KIỂM TRA USER
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // 3. Nếu đã đăng nhập nhưng role KHÔNG PHẢI admin -> Đá về trang chủ
-  if (user.role !== 'admin') {
-    console.warn("Truy cập bị từ chối: Bạn không có quyền Admin!");
+  // 3. KIỂM TRA QUYỀN QUẢN TRỊ
+  const isManagement = user.role === 'admin' || user.role === 'super_admin';
+  if (!isManagement) {
+    console.warn("Truy cập bị từ chối!");
     return <Navigate to="/" replace />;
   }
 
-  // 4. Nếu là Admin xịn -> Cho phép đi vào các route con (Outlet)
   return <Outlet />;
 }
