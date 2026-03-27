@@ -7,6 +7,9 @@ import { AuthProvider } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ProfilePage from './pages/ProfilePage';
+
 
 const router = createBrowserRouter([
     {
@@ -20,6 +23,14 @@ const router = createBrowserRouter([
     {
         path: '/register',
         element: <RegisterPage />,
+    },
+    {
+        path: '/forgot-password',
+        element: <ForgotPasswordPage />,
+    },
+    {
+        path: '/profile',
+        element: <ProfilePage />,
     },
 ]);
 
