@@ -63,7 +63,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
           T
         </div>
         <div>
-          <div className="text-xs text-[#888] font-medium">Tuan Admin</div>
+          <div className="text-xs text-[#888] font-medium">Admin</div>
           <div className="text-[10px] tracking-[.1em] uppercase text-[#444]">Master Control</div>
         </div>
       </div>

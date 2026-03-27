@@ -105,7 +105,7 @@ export const ProductsPanel = ({ onOpenModal }) => {
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 w-[60px]">Ảnh</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4">Thông tin truyện</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4">Giá bán</th>
-            <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 text-center">Kho</th>
+            <th className="text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 text-center">Kho</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 text-right">Thao tác</th>
           </tr>
         </thead>
@@ -134,8 +134,16 @@ export const ProductsPanel = ({ onOpenModal }) => {
                 <td className="p-4 text-[13px] text-[#c9a84c]">
                   {item.basePrice?.toLocaleString()}đ
                 </td>
-                <td className="p-4 text-[13px] text-center">
-                  <span className={item.stock > 0 ? "text-[#e8e2d9]" : "text-red-500"}>{item.stock}</span>
+                <td className="p-4 text-center">
+                  {/* Thêm w-full và flex-col để nó căn giữa tuyệt đối theo cái tiêu đề bên trên */}
+                  <div className="flex flex-col items-center justify-center w-full">
+                    <span className={`text-[13px] font-mono font-bold leading-none ${item.stock > 0 ? "text-[#e8e2d9]" : "text-red-600 animate-pulse"}`}>
+                      {item.stock < 10 && item.stock > 0 ? `0${item.stock}` : item.stock}
+                    </span>
+                    <span className="text-[8px] uppercase tracking-[0.2em] text-[#333] mt-1.5 leading-none">
+                      {item.stock > 0 ? 'Cuốn' : 'Hết'}
+                    </span>
+                  </div>
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex gap-4 justify-end">
