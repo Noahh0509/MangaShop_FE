@@ -8,7 +8,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <nav className="w-[220px] shrink-0 bg-[#0a0a0a] border-r border-[#1a1a1a] flex flex-col h-screen sticky top-0">
+    <nav className="w-[220px] shrink-0 bg-[#0a0a0a] border-r border-[#1a1a1a] flex flex-col min-h-screen">
       <div className="p-[28px_24px] border-b border-[#1a1a1a] font-['Cormorant_Garamond'] text-[20px] font-semibold tracking-[.08em]">
         Manga<span className="text-[#c9a84c]">Shop</span>
         <small className="block font-['DM_Sans'] text-[9px] tracking-[.18em] uppercase text-[#444] mt-0.5">Admin Panel</small>
