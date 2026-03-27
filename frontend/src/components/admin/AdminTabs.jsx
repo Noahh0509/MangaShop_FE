@@ -3,7 +3,6 @@ import React from 'react';
 export default function AdminTabs({ activeTab, setActiveTab }) {
   const tabs = [
     { id: 'products', label: 'Sản phẩm' },
-    { id: 'users', label: 'Người dùng' },
     { id: 'orders', label: 'Đơn hàng' }
   ];
 
