@@ -140,7 +140,7 @@ export default function CartPage() {
             <div className="lg:col-span-2 space-y-4">
               {cart.items.map((item) => (
                 <div
-                  key={item.product._id}
+                  key={item.product?._id || item._id}
                   className="flex flex-col sm:flex-row gap-4 bg-[#141414] p-4 rounded-lg border border-[#222] hover:border-[#444] transition-all"
                 >
                   {/* Ảnh sản phẩm */}
