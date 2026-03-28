@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from "lucide-react";
-import axiosInstance from "../../../services/axiosInstance"; // Sử dụng file bạn đã gửi
+import axiosInstance from "../../../services/axiosInstance";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 
@@ -26,7 +26,6 @@ export default function CartPage() {
   };
 
   // 2. Cập nhật số lượng sản phẩm (Tăng/Giảm)
-  // Tìm hàm handleUpdateQuantity trong CartPage.jsx và sửa lại:
   const handleUpdateQuantity = async (
     productId,
     currentQty,
@@ -35,11 +34,9 @@ export default function CartPage() {
   ) => {
     const newQuantity = currentQty + adjustment;
 
-    // SỬA TẠI ĐÂY: Nếu bấm giảm khi đang là 1, newQuantity sẽ là 0.
-    // Thay vì return, hãy xác nhận với người dùng.
     if (newQuantity === 0) {
       if (window.confirm("Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?")) {
-        handleRemoveItem(productId); // Gọi hàm xóa đã có sẵn của bạn
+        handleRemoveItem(productId);
       }
       return;
     }
@@ -108,7 +105,6 @@ export default function CartPage() {
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Thêm mt-8 để đẩy toàn bộ khối tiêu đề này xuống dưới */}
         <div className="flex items-center justify-between mt-8 mb-8 border-b border-[#333] pb-4">
           <h1 className="text-3xl font-bold text-[#c9a84c] flex items-center gap-3">
             <ShoppingBag /> GIỎ HÀNG
@@ -151,7 +147,10 @@ export default function CartPage() {
                     }
                     alt={item.product?.name || "Sản phẩm không tồn tại."}
                     className="w-full sm:w-24 h-36 object-cover rounded shadow-lg"
-                    onClick={() => item.product?.slug && navigate(`/product/${item.product.slug}`)}
+                    onClick={() =>
+                      item.product?.slug &&
+                      navigate(`/product/${item.product.slug}`)
+                    }
                   />
 
                   {/* Thông tin sản phẩm */}
@@ -168,20 +167,32 @@ export default function CartPage() {
                         </h3>
 
                         {/* LOGIC HIỂN THỊ GIÁ KHUYẾN MÃI TỪ DATABASE */}
-                        <div className="mt-1 flex items-end gap-2">
-                          {/* Luôn hiển thị giá hiện tại đang được tính (thường là displayPrice) */}
-                          <span className="text-[#c9a84c] font-bold text-lg">
-                            {item.price.toLocaleString("vi-VN")}đ
-                          </span>
-
-                          {/* So sánh: Nếu có salePrice VÀ giá đang bán (item.price) thấp hơn basePrice thì hiện giá gốc bị gạch ngang */}
-                          {item.product.salePrice &&
-                            item.price < item.product.basePrice && (
-                              <span className="text-sm text-gray-500 line-through mb-[2px]">
+                        <div className="mt-2 flex flex-col gap-1">
+                          {item.price < item.product.basePrice ? (
+                            <>
+                              <span className="text-sm text-gray-500 line-through">
+                                Giá gốc:{" "}
                                 {item.product.basePrice.toLocaleString("vi-VN")}
                                 đ
                               </span>
-                            )}
+
+                              <span className="text-[11px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 w-fit px-2 py-1 rounded inline-block">
+                                🎁 {item.promoName || "Khuyến mãi"} (-
+                                {(
+                                  item.product.basePrice - item.price
+                                ).toLocaleString("vi-VN")}
+                                đ)
+                              </span>
+
+                              <span className="text-[#c9a84c] font-bold text-lg mt-1">
+                                {item.price.toLocaleString("vi-VN")}đ
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-[#c9a84c] font-bold text-lg">
+                              {item.price.toLocaleString("vi-VN")}đ
+                            </span>
+                          )}
                         </div>
                       </div>
                       <button
@@ -247,39 +258,78 @@ export default function CartPage() {
                   HÓA ĐƠN TẠM TÍNH
                 </h2>
 
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-gray-400">
-                    <span>Số lượng:</span>
-                    <span>{cart.totalItems} sản phẩm</span>
-                  </div>
-                  <div className="flex justify-between text-gray-400">
-                    <span>Tạm tính:</span>
-                    <span>
-                      {(cart.totalPrice + (cart.discount || 0)).toLocaleString(
-                        "vi-VN",
-                      )}
-                      đ
-                    </span>
-                  </div>
-                  {cart.discount > 0 && (
-                    <div className="flex justify-between text-green-500 italic">
-                      <span>Giảm giá:</span>
-                      <span>-{cart.discount.toLocaleString("vi-VN")}đ</span>
-                    </div>
-                  )}
-                </div>
+                {(() => {
+                  const originalTotalPrice = cart.items.reduce(
+                    (total, item) =>
+                      total + (item.product?.basePrice || 0) * item.quantity,
+                    0,
+                  );
 
-                <div className="border-t border-[#333] pt-4 mb-8">
-                  <div className="flex justify-between items-end">
-                    <span className="font-bold">TỔNG TIỀN:</span>
-                    <span className="text-2xl font-black text-[#c9a84c]">
-                      {cart.totalPrice.toLocaleString("vi-VN")}đ
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-gray-500 text-right mt-1">
-                    (Đã bao gồm VAT nếu có)
-                  </p>
-                </div>
+                  const subtotal = cart.items.reduce(
+                    (total, item) => total + (item.price || 0) * item.quantity,
+                    0,
+                  );
+
+                  const totalProductDiscount = originalTotalPrice - subtotal;
+
+                  return (
+                    <>
+                      <div className="space-y-4 mb-6">
+                        <div className="flex justify-between text-gray-400">
+                          <span>Số lượng:</span>
+                          <span>{cart.totalItems} sản phẩm</span>
+                        </div>
+
+                        <div className="flex justify-between text-gray-400">
+                          <span>Tạm tính (Giá gốc):</span>
+                          <span>
+                            {originalTotalPrice.toLocaleString("vi-VN")}đ
+                          </span>
+                        </div>
+
+                        {totalProductDiscount > 0 && (
+                          <div className="flex justify-between text-green-400 font-medium">
+                            <span>Khuyến mãi sản phẩm:</span>
+                            <span>
+                              -{totalProductDiscount.toLocaleString("vi-VN")}đ
+                            </span>
+                          </div>
+                        )}
+
+                        {cart.discount > 0 && (
+                          <div className="flex justify-between text-green-400 font-medium">
+                            <span>Mã giảm giá (Coupon):</span>
+                            <span>
+                              -{cart.discount.toLocaleString("vi-VN")}đ
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="border-t border-[#333] pt-4 mb-8">
+                        <div className="flex justify-between items-end">
+                          <span className="font-bold">TỔNG TIỀN:</span>
+                          <span className="text-2xl font-black text-[#c9a84c]">
+                            {cart.totalPrice.toLocaleString("vi-VN")}đ
+                          </span>
+                        </div>
+
+                        {(totalProductDiscount > 0 || cart.discount > 0) && (
+                          <p className="text-xs text-green-500 text-right mt-2 font-bold italic">
+                            (Tuyệt vời! Bạn tiết kiệm được{" "}
+                            {(
+                              totalProductDiscount + (cart.discount || 0)
+                            ).toLocaleString("vi-VN")}
+                            đ 🎉)
+                          </p>
+                        )}
+                        <p className="text-[10px] text-gray-500 text-right mt-1">
+                          (Đã bao gồm VAT nếu có)
+                        </p>
+                      </div>
+                    </>
+                  );
+                })()}
 
                 <button
                   onClick={() => navigate("/checkout")}
@@ -287,24 +337,6 @@ export default function CartPage() {
                 >
                   TIẾN HÀNH ĐẶT HÀNG
                 </button>
-
-                <div className="mt-6 flex flex-wrap justify-center gap-4 opacity-30 grayscale">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
-                    alt="MoMo"
-                    className="h-6"
-                  />
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
-                    alt="PayPal"
-                    className="h-6"
-                  />
-                  <img
-                    src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png"
-                    alt="VNPay"
-                    className="h-6"
-                  />
-                </div>
               </div>
             </div>
           </div>
