@@ -4,101 +4,83 @@ import AdminNavbar from '../components/admin/AdminNavbar';
 import StatsGrid from '../components/admin/StatsGrid';
 import AdminTabs from '../components/admin/AdminTabs';
 import { ProductsPanel, UsersPanel, OrdersPanel } from '../components/admin/Panels';
-<<<<<<< HEAD
 import AddProductModal from '../components/admin/AddProductModal';
-import { PromotionsPanel} from '../components/admin/PromotionPanel';
-=======
-import { ProductModal } from '../components/admin/Modals';
+import { PromotionsPanel } from '../components/admin/PromotionPanel';
+import AdminAIChat from '../components/admin/AdminAIChat';
 
-// --- BƯỚC 1: IMPORT KHUNG CHAT AI ---
-import AdminAIChat from '../components/admin/AdminAIChat'; 
-
->>>>>>> 0d418b90be00ab12674aa073def17770b0d36c8b
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('products');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null); // Giữ dữ liệu khi sửa
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   // ✅ Hàm mở Modal để THÊM MỚI
   const handleOpenAdd = () => {
-    setEditingProduct(null); // Reset về null để form trắng
-    setIsAddModalOpen(true);
+    setEditingProduct(null); // Reset form trắng
+    setIsModalOpen(true);
   };
 
-  // ✅ Hàm mở Modal để SỬA (Clone của nút thêm)
+  // ✅ Hàm mở Modal để SỬA
   const handleOpenEdit = (product) => {
-    setEditingProduct(product); // Đổ dữ liệu bộ truyện vào State
-    setIsAddModalOpen(true);
+    setEditingProduct(product); // Đổ dữ liệu sản phẩm vào để sửa
+    setIsModalOpen(true);
   };
 
   // ✅ Hàm đóng Modal
   const handleCloseModal = () => {
-    setIsAddModalOpen(false);
+    setIsModalOpen(false);
     setEditingProduct(null);
   };
 
   return (
-<<<<<<< HEAD
-    <div className="flex min-h-screen bg-[#080808] text-[#e8e2d9] font-['DM_Sans'] font-light">
-      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      <main className="flex-1">
-        <AdminNavbar
-          activeTab={activeTab}
-          onAddProduct={handleOpenAdd} // Dùng hàm handleOpenAdd mới
-          onAddUser={() => { }}
-=======
     <div className="flex min-h-screen bg-[#080808] text-[#e8e2d9] font-['DM_Sans'] font-light relative">
       
-      {/* Thanh Sidebar bên trái */}
+      {/* 1. Thanh Sidebar cố định bên trái */}
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Nội dung chính bên phải */}
+      {/* 2. Nội dung chính bên phải */}
       <main className="flex-1 overflow-y-auto">
         <AdminNavbar 
           activeTab={activeTab} 
-          onAddProduct={() => setProductModalOpen(true)}
-          onAddUser={() => setUserModalOpen(true)}
->>>>>>> 0d418b90be00ab12674aa073def17770b0d36c8b
+          onAddProduct={handleOpenAdd} // Nút thêm từ Navbar
+          onAddUser={() => { /* Logic thêm user nếu có */ }}
         />
 
         <div className="p-[32px_40px] animate-[fadeUp_0.5s_ease_both]">
           <StatsGrid />
+          
           <AdminTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-          {/* TRUYỀN HÀM handleOpenEdit VÀO PANEL */}
-          {activeTab === 'products' && (
-            <ProductsPanel onOpenModal={handleOpenEdit} />
-          )}
+          {/* HIỂN THỊ CÁC PANEL THEO TAB */}
+          <div className="mt-6">
+            {activeTab === 'products' && (
+              <ProductsPanel onOpenModal={handleOpenEdit} />
+            )}
 
-          {activeTab === 'users' && <UsersPanel onOpenModal={() => { }} />}
-          {activeTab === 'orders' && <OrdersPanel />}
-          {activeTab === 'promotions' && <PromotionsPanel />}
+            {activeTab === 'users' && (
+              <UsersPanel onOpenModal={() => { }} />
+            )}
+
+            {activeTab === 'orders' && <OrdersPanel />}
+            
+            {activeTab === 'promotions' && <PromotionsPanel />}
+          </div>
         </div>
       </main>
 
-<<<<<<< HEAD
-      {/* MODAL ĐA NĂNG: VỪA THÊM VỪA SỬA */}
+      {/* 3. MODAL ĐA NĂNG: Dùng chung cho cả Thêm và Sửa */}
       <AddProductModal
-        isOpen={isAddModalOpen}
+        isOpen={isModalOpen}
         onClose={handleCloseModal}
-        editData={editingProduct} // ✅ Truyền data sửa vào đây nè sếp
+        editData={editingProduct} 
         onSuccess={() => {
-          // Thay vì reload sếp có thể fetch lại data, 
-          // nhưng tạm thời reload cho lẹ cũng được
+          // Có thể dùng fetch lại data thay vì reload, nhưng tạm thời reload để cập nhật nhanh
           window.location.reload();
         }}
       />
-=======
-      {/* --- BƯỚC 2: ĐẶT KHUNG CHAT AI Ở ĐÂY --- */}
-      {/* Nó sẽ luôn nằm cố định ở góc dưới bên phải màn hình */}
-      <AdminAIChat />
 
-      {/* Các Modals quản trị */}
-      <ProductModal isOpen={isProductModalOpen} onClose={() => setProductModalOpen(false)} />
-      {/* <UserModal isOpen={isUserModalOpen} onClose={() => setUserModalOpen(false)} /> */}
+      {/* 4. AI CHAT: Luôn nổi trên cùng bên phải/dưới */}
+      <AdminAIChat />
       
->>>>>>> 0d418b90be00ab12674aa073def17770b0d36c8b
     </div>
   );
 }
