@@ -146,12 +146,12 @@ export default function CartPage() {
                   {/* Ảnh sản phẩm */}
                   <img
                     src={
-                      item.product.images?.[0]?.url ||
+                      item.product?.images?.[0]?.url ||
                       "https://via.placeholder.com/150"
                     }
-                    alt={item.product.name}
+                    alt={item.product?.name || "Sản phẩm không tồn tại."}
                     className="w-full sm:w-24 h-36 object-cover rounded shadow-lg"
-                    onClick={() => navigate(`/product/${item.product.slug}`)}
+                    onClick={() => item.product?.slug && navigate(`/product/${item.product.slug}`)}
                   />
 
                   {/* Thông tin sản phẩm */}
@@ -164,7 +164,7 @@ export default function CartPage() {
                             navigate(`/product/${item.product.slug}`)
                           }
                         >
-                          {item.product.name}
+                          {item.product?.name || "Sản phẩm đã ngừng kinh doanh"}
                         </h3>
 
                         {/* LOGIC HIỂN THỊ GIÁ KHUYẾN MÃI TỪ DATABASE */}
