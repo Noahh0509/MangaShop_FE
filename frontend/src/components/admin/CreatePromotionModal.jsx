@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import api from '../../services/axiosInstance';
@@ -6,7 +6,7 @@ import { registerLocale } from "react-datepicker";
 import vi from 'date-fns/locale/vi';
 registerLocale('vi', vi);
 
-const CreatePromotionModal = ({ onClose, onSuccess }) => {
+const CreatePromotionModal = ({ onClose, onSuccess, editData }) => {
     const [formData, setFormData] = useState({
         name: '',
         code: '',
@@ -18,6 +18,23 @@ const CreatePromotionModal = ({ onClose, onSuccess }) => {
         status: 'active'
     });
 
+    // 🎯 1. ĐỔ DỮ LIỆU CŨ VÀO FORM KHI BẤM NÚT SỬA
+    useEffect(() => {
+        if (editData) {
+            setFormData({
+                name: editData.name || '',
+                code: editData.code || '',
+                discountType: editData.discountType || 'percentage',
+                discountValue: editData.discountValue || 0,
+                // Chuyển string date từ DB về Object Date cho DatePicker nó hiểu nhen sếp
+                startDate: editData.startDate ? new Date(editData.startDate) : new Date(),
+                endDate: editData.endDate ? new Date(editData.endDate) : null,
+                minOrderValue: editData.minOrderValue || 0,
+                status: editData.status || 'active'
+            });
+        }
+    }, [editData]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.discountValue <= 0) return alert("Mức giảm phải > 0 sếp ơi!");
@@ -25,9 +42,17 @@ const CreatePromotionModal = ({ onClose, onSuccess }) => {
         if (formData.endDate <= formData.startDate) return alert("Ngày kết thúc phải sau ngày bắt đầu!");
 
         try {
-            const res = await api.post('/api/promotions', formData);
+            let res;
+            if (editData) {
+                // 📝 NẾU CÓ editData -> GỌI API CẬP NHẬT (PUT)
+                res = await api.put(`/api/promotions/${editData._id}`, formData);
+            } else {
+                // ➕ NẾU KHÔNG -> GỌI API TẠO MỚI (POST)
+                res = await api.post('/api/promotions', formData);
+            }
+
             if (res.data.success) {
-                alert("Đã tạo khuyến mãi thành công!");
+                alert(editData ? "Đã cập nhật thành công!" : "Đã tạo khuyến mãi thành công!");
                 onSuccess();
             }
         } catch (err) {
@@ -39,41 +64,61 @@ const CreatePromotionModal = ({ onClose, onSuccess }) => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 text-left">
             <div className="bg-[#0a0a0a] border border-[#c9a84c]/30 w-full max-w-2xl overflow-hidden shadow-2xl animate-fade-in text-left">
 
-                {/* Header - Chữ bự 24px */}
+                {/* Header - Đổi tiêu đề theo mode */}
                 <div className="p-6 border-b border-[#1a1a1a] flex justify-between items-center">
-                    <h3 className="font-['Cormorant_Garamond'] text-[24px] text-[#c9a84c] uppercase tracking-widest font-bold">Tạo Chiến Dịch Mới</h3>
+                    <h3 className="font-['Cormorant_Garamond'] text-[24px] text-[#c9a84c] uppercase tracking-widest font-bold">
+                        {editData ? "Cập Nhật Chiến Dịch" : "Tạo Chiến Dịch Mới"}
+                    </h3>
                     <button onClick={onClose} className="text-[#444] hover:text-white text-xl transition-all">✕</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                    {/* ─── PHẦN NHẬP LIỆU 2 CỘT CỦA SẾP ─── */}
                     <div className="grid grid-cols-2 gap-8 text-left">
-                        {/* Cột 1: Tên, Mã, Loại/Giá trị */}
                         <div className="space-y-5">
                             <div>
                                 <label className="text-[11px] uppercase tracking-widest text-[#555] block mb-2 font-bold">Tên chiến dịch</label>
-                                <input type="text" required className="w-full bg-[#111] border border-[#222] text-[#e8e2d9] text-[15px] p-4 outline-none focus:border-[#c9a84c] transition-all" onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Sale sập sàn" />
+                                <input 
+                                    type="text" required 
+                                    className="w-full bg-[#111] border border-[#222] text-[#e8e2d9] text-[15px] p-4 outline-none focus:border-[#c9a84c] transition-all" 
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
+                                    placeholder="Sale sập sàn" 
+                                />
                             </div>
                             <div>
                                 <label className="text-[11px] uppercase tracking-widest text-[#555] block mb-2 font-bold">Mã Code</label>
-                                <input type="text" className="w-full bg-[#111] border border-[#222] text-[#c9a84c] font-mono text-[15px] p-4 outline-none focus:border-[#c9a84c] uppercase" onChange={(e) => setFormData({ ...formData, code: e.target.value })} placeholder="AUTO" />
+                                <input 
+                                    type="text" 
+                                    className="w-full bg-[#111] border border-[#222] text-[#c9a84c] font-mono text-[15px] p-4 outline-none focus:border-[#c9a84c] uppercase" 
+                                    value={formData.code}
+                                    onChange={(e) => setFormData({ ...formData, code: e.target.value })} 
+                                    placeholder="AUTO" 
+                                />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-[11px] uppercase tracking-widest text-[#555] block mb-2 font-bold">Loại</label>
-                                    <select className="w-full bg-[#111] border border-[#222] text-[14px] p-4 outline-none text-[#e8e2d9] appearance-none" onChange={(e) => setFormData({ ...formData, discountType: e.target.value })}>
+                                    <select 
+                                        className="w-full bg-[#111] border border-[#222] text-[14px] p-4 outline-none text-[#e8e2d9] appearance-none" 
+                                        value={formData.discountType}
+                                        onChange={(e) => setFormData({ ...formData, discountType: e.target.value })}
+                                    >
                                         <option value="percentage">%</option>
                                         <option value="fixed">đ</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label className="text-[11px] uppercase tracking-widest text-[#555] block mb-2 font-bold">Giá trị</label>
-                                    <input type="number" required className="w-full bg-[#111] border border-[#222] text-[#e8e2d9] text-[15px] p-4 outline-none focus:border-[#c9a84c]" onChange={(e) => setFormData({ ...formData, discountValue: Number(e.target.value) })} />
+                                    <input 
+                                        type="number" required 
+                                        className="w-full bg-[#111] border border-[#222] text-[#e8e2d9] text-[15px] p-4 outline-none focus:border-[#c9a84c]" 
+                                        value={formData.discountValue}
+                                        onChange={(e) => setFormData({ ...formData, discountValue: Number(e.target.value) })} 
+                                    />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Cột 2: Lịch & Điều kiện */}
                         <div className="space-y-5">
                             <div>
                                 <label className="text-[11px] uppercase tracking-widest text-[#555] block mb-2 font-bold">Ngày bắt đầu</label>
@@ -100,12 +145,16 @@ const CreatePromotionModal = ({ onClose, onSuccess }) => {
                             </div>
                             <div>
                                 <label className="text-[11px] uppercase tracking-widest text-[#555] block mb-2 font-bold">Đơn tối thiểu (đ)</label>
-                                <input type="number" className="w-full bg-[#111] border border-[#222] text-[#e8e2d9] text-[15px] p-4 outline-none focus:border-[#c9a84c]" onChange={(e) => setFormData({ ...formData, minOrderValue: Number(e.target.value) })} />
+                                <input 
+                                    type="number" 
+                                    className="w-full bg-[#111] border border-[#222] text-[#e8e2d9] text-[15px] p-4 outline-none focus:border-[#c9a84c]" 
+                                    value={formData.minOrderValue}
+                                    onChange={(e) => setFormData({ ...formData, minOrderValue: Number(e.target.value) })} 
+                                />
                             </div>
                         </div>
                     </div>
 
-                    {/* ─── HÀNG NÚT XÁC NHẬN (Cái sếp đang thiếu nè) ─── */}
                     <div className="pt-8 mt-4 border-t border-[#1a1a1a] flex justify-end gap-6">
                         <button
                             type="button"
@@ -118,7 +167,7 @@ const CreatePromotionModal = ({ onClose, onSuccess }) => {
                             type="submit"
                             className="px-12 py-4 text-[11px] uppercase tracking-[0.2em] bg-[#c9a84c] text-black font-black hover:bg-[#e8e2d9] transition-all duration-300 shadow-[0_10px_30px_rgba(201,168,76,0.15)] active:scale-95"
                         >
-                            Kích hoạt ngay
+                            {editData ? "Lưu thay đổi" : "Kích hoạt ngay"}
                         </button>
                     </div>
                 </form>

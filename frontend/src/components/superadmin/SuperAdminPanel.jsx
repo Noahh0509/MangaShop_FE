@@ -192,3 +192,4 @@ export const SuperAdminPanel = () => {
     </div>
   );
 };
+export default SuperAdminPanel;

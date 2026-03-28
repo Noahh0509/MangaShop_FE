@@ -157,7 +157,7 @@ export const ProductsPanel = ({ onOpenModal }) => {
             className="w-full bg-transparent border border-[#1a1a1a] text-[#e8e2d9] text-xs py-[10px] pr-10 pl-4 outline-none focus:border-[#c9a84c] transition-all placeholder-[#333]"
           />
         </div>
-        
+
       </div>
 
       <table className="w-full border-collapse">
@@ -239,9 +239,8 @@ export const ProductsPanel = ({ onOpenModal }) => {
       </table>
 
       {/* ─── THANH PHÂN TRANG (PAGINATION) ─── */}
-      {/* ─── THANH PHÂN TRANG (PAGINATION) ─── */}
-      <div className="mt-10 flex items-center justify-between border-t border-[#111] pt-6">
-        <span className="text-[9px] text-[#333] uppercase tracking-[0.2em]">
+      <div className="mt-10 flex items-center justify-center border-t border-[#111] pt-6 relative">
+        <span className="absolute left-0 text-[9px] text-[#333] uppercase tracking-[0.2em] hidden md:block">
           Hiển thị {products.length} / {totalItems} tác phẩm
         </span>
 

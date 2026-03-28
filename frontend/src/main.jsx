@@ -7,8 +7,7 @@ import { AuthProvider, AuthContext } from './context/AuthContext';
 
 // Components & Routes bảo vệ
 import AdminRoute from './components/admin/AdminRoute';
-import ProtectedRoute from './components/auth/ProtectedRoute'; // Nên có thêm cái này
-import { SuperAdminPanel } from './components/superadmin/SuperAdminPanel';
+import SuperAdminPanel from './components/superadmin/SuperAdminPanel';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -26,14 +25,29 @@ import CheckoutPage from "./components/checkout/payment/CheckoutPage";
 import PaymentResult from "./components/checkout/payment/PaymentResult";
 
 /**
- * 🛡️ 1. KHIÊN SUPER ADMIN (Sửa lại logic điều hướng)
+ * 🛡️ 1. KHIÊN USER THƯỜNG (Thay thế cho file ProtectedRoute đã xóa)
+ */
+const ProtectedRoute = () => {
+    const { user, loading } = useContext(AuthContext);
+
+    if (loading) return (
+        <div className="min-h-screen bg-[#0e0e0e] flex items-center justify-center text-[#c9a84c]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#c9a84c]"></div>
+        </div>
+    );
+
+    // Nếu có user thì cho vào trang con (Outlet), không thì đá về trang login
+    return user ? <Outlet /> : <Navigate to="/login" replace />;
+};
+
+/**
+ * 🛡️ 2. KHIÊN SUPER ADMIN
  */
 const SuperAdminOnly = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
 
     if (loading) return <div className="loading-spinner">ĐANG KIỂM TRA QUYỀN...</div>;
 
-    // Nếu không phải trùm, đá về trang admin chính thay vì trang chủ
     if (!user || user.role !== 'super_admin') {
         return <Navigate to="/admin" replace />;
     }
@@ -42,7 +56,7 @@ const SuperAdminOnly = ({ children }) => {
 };
 
 /**
- * 🛰️ 2. CẤU HÌNH ROUTER
+ * 🛰️ 3. CẤU HÌNH ROUTER
  */
 const router = createBrowserRouter([
     // --- ROUTES CÔNG KHAI ---
@@ -55,7 +69,7 @@ const router = createBrowserRouter([
 
     // --- ROUTES CẦN ĐĂNG NHẬP (USER THƯỜNG) ---
     {
-        element: <ProtectedRoute />, // Bạn nên tạo component này để bọc các trang riêng tư
+        element: <ProtectedRoute />, 
         children: [
             { path: "/profile", element: <ProfilePage /> },
             { path: "/cart", element: <CartPage /> },
@@ -70,11 +84,11 @@ const router = createBrowserRouter([
         element: <AdminRoute />, 
         children: [
             {
-                index: true, // Đây sẽ là trang mặc định khi vào /admin
+                index: true,
                 element: <AdminPage />,
             },
             {
-                path: 'master-control', // Đường dẫn sẽ là /admin/master-control
+                path: 'master-control',
                 element: (
                     <SuperAdminOnly>
                         <SuperAdminPanel />
@@ -84,7 +98,7 @@ const router = createBrowserRouter([
         ]
     },
     
-    // --- ROUTE 404 (Nên thêm) ---
+    // --- ROUTE 404 ---
     { path: '*', element: <Navigate to="/" replace /> }
 ]);
 

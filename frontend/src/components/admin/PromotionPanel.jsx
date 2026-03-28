@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/axiosInstance'; // Axios instance của sếp
+import api from '../../services/axiosInstance'; 
 import CreatePromotionModal from './CreatePromotionModal';
+import { toast } from 'react-hot-toast'; // Sếp nhớ import toast nếu dùng nhen
 
 export const PromotionsPanel = () => {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // 🎯 1. CHỖ NÀY QUAN TRỌNG: Dùng để truyền dữ liệu sửa vào Modal
+  const [editingPromo, setEditingPromo] = useState(null); 
 
   // 📡 1. LẤY DANH SÁCH TỪ BE
   const fetchPromotions = async () => {
@@ -26,16 +30,13 @@ export const PromotionsPanel = () => {
     fetchPromotions();
   }, []);
 
-  // ⚡ 2. XỬ LÝ GẠT CÔNG TẮC (TOGGLE STATUS)
+  // ⚡ 2. XỬ LÝ GẠT CÔNG TẮC
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-
-      // Gọi API Patch lên BE
       const res = await api.patch(`/api/promotions/${id}/toggle`, { status: newStatus });
 
       if (res.data.success) {
-        // Cập nhật State cục bộ để giao diện nảy ngay lập tức (không cần load lại trang)
         setPromotions(prev =>
           prev.map(p => p._id === id ? { ...p, status: newStatus } : p)
         );
@@ -45,20 +46,45 @@ export const PromotionsPanel = () => {
     }
   };
 
+  // 🗑️ 3. XỬ LÝ XOÁ
+  const handleDelete = async (id) => {
+    if (window.confirm("Sếp Tuan chắc chắn muốn xóa mã này chứ? Không hồi lại được đâu nhé!")) {
+      try {
+        // 🎯 Đổi axiosInstance thành api cho đồng bộ với bên trên của sếp
+        await api.delete(`/api/promotions/${id}`);
+        setPromotions(prev => prev.filter(p => p._id !== id));
+        toast.success("Đã xóa sạch sẽ!");
+      } catch (err) {
+        toast.error("Lỗi xóa rồi sếp ơi!");
+      }
+    }
+  };
+
+  // 📝 4. XỬ LÝ SỬA (Mượn Modal của Thêm mới)
+  const handleEditClick = (promo) => {
+    setEditingPromo(promo); // Lưu data của mã muốn sửa vào đây
+    setIsModalOpen(true);   // Mở cái modal mà sếp đang dùng cho Thêm mới lên
+  };
+
+  // ➕ 5. HÀM MỞ MODAL KHI BẤM NÚT "THÊM KHUYẾN MÃI"
+  const handleAddClick = () => {
+    setEditingPromo(null); // Reset về null để Modal hiểu là đang Thêm mới
+    setIsModalOpen(true);
+  };
+
   if (loading) return <div className="p-20 text-center text-[#444] text-[10px] uppercase tracking-widest">Đang truy xuất kho mã...</div>;
 
   return (
     <div className="animate-[fadeUp_0.5s_ease_both] relative">
-      {/* ─── HEADER AREA (MỚI THÊM) ─── */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="font-['Cormorant_Garamond'] text-[24px] text-[#e8e2d9] leading-none">Chương trình ưu đãi</h2>
           <p className="text-[9px] text-[#444] uppercase tracking-[0.2em] mt-2">Thiết lập mã giảm giá và chiến dịch Flash Sale</p>
         </div>
 
-        {/* 🚀 NÚT THÊM MỚI */}
+        {/* 🚀 NÚT THÊM MỚI - Đã đổi sang dùng handleAddClick */}
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleAddClick}
           className="group relative overflow-hidden bg-[#c9a84c] px-6 py-2.5 transition-all hover:bg-[#b09340] flex items-center gap-2"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -66,17 +92,13 @@ export const PromotionsPanel = () => {
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-black">Thêm khuyến mãi</span>
-
-          {/* Hiệu ứng quét sáng khi hover cho nó "oai" */}
           <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-500 group-hover:left-[100%]"></div>
         </button>
       </div>
 
-      {/* ─── BẢNG DANH SÁCH (Sếp giữ nguyên phần table này) ─── */}
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-[#1a1a1a]">
-            {/* Các th của sếp... */}
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-4 pb-4 w-[25%]">Tên mã</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-4 pb-4">Mã Code</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-4 pb-4">Mức giảm</th>
@@ -87,10 +109,8 @@ export const PromotionsPanel = () => {
           </tr>
         </thead>
         <tbody>
-          {/* Phần map promotions của sếp... */}
           {promotions.map((promo) => (
             <tr key={promo._id} className="hover:bg-[#0c0c0c] transition-colors border-b border-[#111] group">
-              {/* Các td của sếp... */}
               <td className="p-4">
                 <div className="font-['Cormorant_Garamond'] text-[15px] text-[#e8e2d9] group-hover:text-[#c9a84c] transition-colors line-clamp-1">{promo.name}</div>
               </td>
@@ -118,21 +138,35 @@ export const PromotionsPanel = () => {
                   </button>
                 </div>
               </td>
-              <td className="p-4 text-right">
-                <button className="text-[10px] uppercase tracking-widest text-[#333] hover:text-[#c9a84c] transition-colors">Sửa</button>
+              {/* 🎯 NÚT SỬA & XOÁ ĐÃ ĐƯỢC GẮN DÂY */}
+              <td className="p-4 text-right flex justify-end items-center gap-6">
+                <button
+                  onClick={() => handleEditClick(promo)}
+                  className="text-[10px] uppercase tracking-widest text-[#333] hover:text-[#c9a84c] transition-colors"
+                >Sửa</button>
+
+                <button
+                  onClick={() => handleDelete(promo._id)}
+                  className="text-[10px] uppercase tracking-widest text-[#333] hover:text-red-500 transition-colors"
+                >Xoá</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* ─── MODAL THÊM KHUYẾN MÃI (SẼ LÀM Ở BƯỚC TIẾP THEO) ─── */}
+      {/* ─── MODAL DÙNG CHUNG CHO CẢ THÊM VÀ SỬA ─── */}
       {isModalOpen && (
         <CreatePromotionModal
-          onClose={() => setIsModalOpen(false)}
+          editData={editingPromo} // 🎯 Truyền data của promo đang sửa vào đây
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingPromo(null); // Đóng modal xong thì xóa rác đi
+          }}
           onSuccess={() => {
             setIsModalOpen(false);
-            fetchPromotions(); // Refresh lại danh sách sau khi thêm
+            setEditingPromo(null);
+            fetchPromotions(); 
           }}
         />
       )}
