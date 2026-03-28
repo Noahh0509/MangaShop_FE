@@ -3,25 +3,32 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import './index.css';
 
-// Context & Routes
+// Context
 import { AuthProvider, AuthContext } from './context/AuthContext';
-import AdminRoute from './components/admin/AdminRoute';
 
-// Pages
+// Components & Routes bảo vệ
+import AdminRoute from './components/admin/AdminRoute';
+import { SuperAdminPanel } from './components/superadmin/SuperAdminPanel';
+
+// Pages Chung
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+
+// Phần Admin (Của Huy)
 import AdminPage from './pages/AdminPage';
 
-// Components
-import { SuperAdminPanel } from './components/superadmin/SuperAdminPanel';
+// Phần Thanh toán (Của Tuấn)
 import CartPage from "./components/checkout/cart/CartPage";
 import CheckoutPage from "./components/checkout/payment/CheckoutPage";
 import PaymentResult from "./components/checkout/payment/PaymentResult";
 
-// 🛡️ 1. "KHIÊN" SUPER ADMIN (BỎ OUTLET, DÙNG CHILDREN)
+/**
+ * 🛡️ 1. "KHIÊN" SUPER ADMIN
+ * Chỉ cho phép role 'super_admin' truy cập
+ */
 const SuperAdminOnly = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
 
@@ -31,51 +38,32 @@ const SuperAdminOnly = ({ children }) => {
         </div>
     );
 
-    // CHỈ cho phép đúng role "super_admin" vào đây
     if (!user || user.role !== 'super_admin') {
         return <Navigate to="/admin" replace />;
     }
 
-    // Trả về cái Panel nằm bên trong nó
     return children;
 };
 
-// 🛰️ 2. CẤU HÌNH ROUTER
+/**
+ * 🛰️ 2. CẤU HÌNH ROUTER TỔNG HỢP
+ */
 const router = createBrowserRouter([
+    // --- ROUTES CÔNG KHAI ---
+    { path: '/', element: <HomePage /> },
+    { path: '/login', element: <LoginPage /> },
+    { path: '/register', element: <RegisterPage /> },
+    { path: "/products", element: <ProductsPage /> },
+    { path: "/products/:slug", element: <ProductDetailPage /> },
+    
+    // --- ROUTES GIỎ HÀNG & THANH TOÁN (TUẤN) ---
+    { path: "/cart", element: <CartPage /> },
+    { path: "/checkout", element: <CheckoutPage /> },
+    { path: "/payment-result", element: <PaymentResult /> },
+
+    // --- ROUTES ADMIN (HUY + SUPER ADMIN) ---
     {
-        path: '/',
-        element: <HomePage />,
-    },
-    {
-        path: '/login',
-        element: <LoginPage />,
-    },
-    {
-        path: '/register',
-        element: <RegisterPage />,
-    },
-    {
-        path: "/cart",
-        element: <CartPage />,
-    },
-    {
-        path: "/products",
-        element: <ProductsPage />,
-    },
-    {
-        path: "/products/:slug",
-        element: <ProductDetailPage />,
-    },
-    {
-        path: "/checkout",
-        element: <CheckoutPage />,
-    },
-    {
-        path: "/payment-result",
-        element: <PaymentResult />,
-    },
-    {
-        element: <AdminRoute />, // Cửa 1: Cho cả Admin và Super Admin vào
+        element: <AdminRoute />, // Cửa 1: Check login & role Admin/SuperAdmin
         children: [
             {
                 path: '/admin',
@@ -93,10 +81,13 @@ const router = createBrowserRouter([
     },
 ]);
 
+/**
+ * 🚀 3. RENDER
+ */
 createRoot(document.getElementById("root")).render(
     <StrictMode>
         <AuthProvider>
             <RouterProvider router={router} />
         </AuthProvider>
-    </StrictMode>,
+    </StrictMode>
 );
