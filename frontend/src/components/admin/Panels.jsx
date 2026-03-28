@@ -10,6 +10,54 @@ export const ProductsPanel = ({ onOpenModal }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [allPromotions, setAllPromotions] = useState([]);
+
+
+
+  useEffect(() => {
+    const fetchAllPromos = async () => {
+      try {
+        const res = await api.get('/api/promotions/admin-all');
+        setAllPromotions(res.data.data || []);
+      } catch (err) { console.error("Lỗi lấy KM:", err); }
+    };
+    fetchAllPromos();
+  }, []);
+
+  // Hàm xử lý áp dụng KM cho 1 SP
+  const handleApplyPromo = async (productId, promoId) => {
+    try {
+      setLoading(true);
+      // 1. Gửi lệnh lên BE
+      const res = await api.patch(`/api/products/${productId}/apply-promotion`, {
+        promotionId: promoId
+      });
+
+      if (res.data.success) {
+        // 🎯 ĐÂY LÀ DÒNG QUYẾT ĐỊNH: Load lại bảng để React nhận promotions mới
+        await fetchProducts(currentPage);
+        // alert("Đã cập nhật!"); // Bật cái này lên để test xem nó có chạy vào đây không sếp
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Lỗi rồi sếp!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Hàm bật KM cho TOÀN BỘ sản phẩm (Sale All)
+  const handleApplyToAll = async () => {
+    const promoId = window.prompt("Nhập ID khuyến mãi muốn áp dụng cho TẤT CẢ (Để trống để hủy hết):");
+    if (promoId === null) return;
+    try {
+      setLoading(true);
+      await api.patch(`/api/products/apply-promotion-all`, { promotionId: promoId });
+      fetchProducts(1);
+      alert("Đã 'nhuộm vàng' toàn bộ cửa hàng!");
+    } catch (err) { alert("Lỗi rồi sếp!"); }
+    finally { setLoading(false); }
+  };
 
   const fetchProducts = async (page = 1) => {
     try {
@@ -109,6 +157,7 @@ export const ProductsPanel = ({ onOpenModal }) => {
             className="w-full bg-transparent border border-[#1a1a1a] text-[#e8e2d9] text-xs py-[10px] pr-10 pl-4 outline-none focus:border-[#c9a84c] transition-all placeholder-[#333]"
           />
         </div>
+        
       </div>
 
       <table className="w-full border-collapse">
@@ -119,11 +168,12 @@ export const ProductsPanel = ({ onOpenModal }) => {
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4">Thông tin truyện</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4">Giá bán</th>
             <th className="text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 text-center">Kho</th>
-            <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 text-right">Thao tác</th>
+            <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-3 pb-4 text-right">Khuyến mãi</th>
           </tr>
         </thead>
         <tbody>
           {products.map((item, index) => {
+            console.log(`Sản phẩm ${item.name} có KM:`, item.promotions);
             let cleanUrl = item.images?.find(i => i.isPrimary)?.url || item.images?.[0]?.url || "";
             // Cách tính số thứ tự đúng theo trang: (Trang hiện tại - 1) * 5 + index + 1
             const displayIndex = (currentPage - 1) * 5 + index + 1;
@@ -157,6 +207,24 @@ export const ProductsPanel = ({ onOpenModal }) => {
                       {item.stock > 0 ? 'Cuốn' : 'Hết'}
                     </span>
                   </div>
+                </td>
+                <td className="p-4 w-[150px]">
+                  <select
+                    value={
+                      item.promotions && item.promotions.length > 0
+                        ? (typeof item.promotions[0] === 'object' ? item.promotions[0]._id : item.promotions[0])
+                        : ""
+                    }
+                    onChange={(e) => handleApplyPromo(item._id, e.target.value)}
+                    className="bg-transparent border border-[#1a1a1a] text-[#888] text-[10px] p-1.5 outline-none focus:border-[#c9a84c] w-full"
+                  >
+                    <option value="">Không có</option>
+                    {allPromotions.map(p => (
+                      <option key={p._id} value={p._id} className="bg-black text-white">
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex gap-4 justify-end">

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/axiosInstance'; // Axios instance của sếp
+import CreatePromotionModal from './CreatePromotionModal';
 
 export const PromotionsPanel = () => {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 📡 1. LẤY DANH SÁCH TỪ BE
   const fetchPromotions = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/api/promotions/admin-all'); 
+      const res = await api.get('/api/promotions/admin-all');
       if (res.data.success) {
         setPromotions(res.data.data);
       }
@@ -28,13 +30,13 @@ export const PromotionsPanel = () => {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-      
+
       // Gọi API Patch lên BE
       const res = await api.patch(`/api/promotions/${id}/toggle`, { status: newStatus });
 
       if (res.data.success) {
         // Cập nhật State cục bộ để giao diện nảy ngay lập tức (không cần load lại trang)
-        setPromotions(prev => 
+        setPromotions(prev =>
           prev.map(p => p._id === id ? { ...p, status: newStatus } : p)
         );
       }
@@ -46,10 +48,35 @@ export const PromotionsPanel = () => {
   if (loading) return <div className="p-20 text-center text-[#444] text-[10px] uppercase tracking-widest">Đang truy xuất kho mã...</div>;
 
   return (
-    <div className="animate-[fadeUp_0.5s_ease_both]">
+    <div className="animate-[fadeUp_0.5s_ease_both] relative">
+      {/* ─── HEADER AREA (MỚI THÊM) ─── */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="font-['Cormorant_Garamond'] text-[24px] text-[#e8e2d9] leading-none">Chương trình ưu đãi</h2>
+          <p className="text-[9px] text-[#444] uppercase tracking-[0.2em] mt-2">Thiết lập mã giảm giá và chiến dịch Flash Sale</p>
+        </div>
+
+        {/* 🚀 NÚT THÊM MỚI */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="group relative overflow-hidden bg-[#c9a84c] px-6 py-2.5 transition-all hover:bg-[#b09340] flex items-center gap-2"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-black">Thêm khuyến mãi</span>
+
+          {/* Hiệu ứng quét sáng khi hover cho nó "oai" */}
+          <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-500 group-hover:left-[100%]"></div>
+        </button>
+      </div>
+
+      {/* ─── BẢNG DANH SÁCH (Sếp giữ nguyên phần table này) ─── */}
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-[#1a1a1a]">
+            {/* Các th của sếp... */}
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-4 pb-4 w-[25%]">Tên mã</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-4 pb-4">Mã Code</th>
             <th className="text-left text-[10px] tracking-[.18em] uppercase text-[#444] font-normal px-4 pb-4">Mức giảm</th>
@@ -60,8 +87,10 @@ export const PromotionsPanel = () => {
           </tr>
         </thead>
         <tbody>
+          {/* Phần map promotions của sếp... */}
           {promotions.map((promo) => (
             <tr key={promo._id} className="hover:bg-[#0c0c0c] transition-colors border-b border-[#111] group">
+              {/* Các td của sếp... */}
               <td className="p-4">
                 <div className="font-['Cormorant_Garamond'] text-[15px] text-[#e8e2d9] group-hover:text-[#c9a84c] transition-colors line-clamp-1">{promo.name}</div>
               </td>
@@ -79,10 +108,9 @@ export const PromotionsPanel = () => {
               <td className="p-4 text-[10px] text-[#555] font-mono">
                 {new Date(promo.endDate).toLocaleDateString('vi-VN')}
               </td>
-              {/* 🎯 NÚT GẠT TRẠNG THÁI */}
               <td className="p-4 text-center">
                 <div className="flex justify-center">
-                  <button 
+                  <button
                     onClick={() => handleToggleStatus(promo._id, promo.status)}
                     className={`relative w-8 h-4 rounded-full transition-all duration-300 border ${promo.status === 'active' ? 'bg-[#c9a84c] border-[#c9a84c]' : 'bg-transparent border-[#222]'}`}
                   >
@@ -97,6 +125,17 @@ export const PromotionsPanel = () => {
           ))}
         </tbody>
       </table>
+
+      {/* ─── MODAL THÊM KHUYẾN MÃI (SẼ LÀM Ở BƯỚC TIẾP THEO) ─── */}
+      {isModalOpen && (
+        <CreatePromotionModal
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            fetchPromotions(); // Refresh lại danh sách sau khi thêm
+          }}
+        />
+      )}
     </div>
   );
 };
