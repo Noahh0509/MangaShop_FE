@@ -51,7 +51,7 @@ export default function HomePage() {
             } else {
                 setMessages(prev => [...prev, { role: 'bot', content: data.message || "Có lỗi xảy ra rồi ạ!" }]);
             }
-        } catch (error) {
+        } catch  {
             setMessages(prev => [...prev, { role: 'bot', content: "Không thể kết nối máy chủ. Thử lại sau nhé Huy!" }]);
         } finally {
             setIsLoading(false);
