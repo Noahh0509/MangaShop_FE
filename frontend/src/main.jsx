@@ -17,12 +17,8 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
-<<<<<<< HEAD
 import OrdersPage from './pages/OrdersPage';
-=======
 import AdminPage from './pages/AdminPage';
->>>>>>> 03ccdff65155a1bbbb45a86508698e6a10c5a637
-
 // Checkout (Tuấn)
 import CartPage from "./components/checkout/cart/CartPage";
 import CheckoutPage from "./components/checkout/payment/CheckoutPage";
@@ -101,16 +97,10 @@ const router = createBrowserRouter([
             },
         ]
     },
-<<<<<<< HEAD
     {
         path: '/orders',
         element: <OrdersPage />,
     },
-=======
-    
-    // --- ROUTE 404 ---
-    { path: '*', element: <Navigate to="/" replace /> }
->>>>>>> 03ccdff65155a1bbbb45a86508698e6a10c5a637
 ]);
 
 createRoot(document.getElementById("root")).render(
