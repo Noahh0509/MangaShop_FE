@@ -16,8 +16,16 @@ import RegisterPage from './pages/RegisterPage';
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+
+
+
+
 import ProfilePage from './pages/ProfilePage';
+
+
 import OrdersPage from './pages/OrdersPage';
+
+
 import AdminPage from './pages/AdminPage';
 // Checkout (Tuấn)
 import CartPage from "./components/checkout/cart/CartPage";
