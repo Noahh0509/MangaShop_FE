@@ -6,7 +6,7 @@ import AdminTabs from '../components/admin/AdminTabs';
 import { ProductsPanel, UsersPanel, OrdersPanel } from '../components/admin/Panels';
 import AddProductModal from '../components/admin/AddProductModal';
 import { PromotionsPanel } from '../components/admin/PromotionPanel';
-import AdminAIChat from '../components/admin/AdminAIChat';
+
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('products');
@@ -79,7 +79,6 @@ export default function AdminPage() {
       />
 
       {/* 4. AI CHAT: Luôn nổi trên cùng bên phải/dưới */}
-      <AdminAIChat />
       
     </div>
   );
