@@ -23,8 +23,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 
 
-import OrdersPage from './pages/OrdersPage';
-
 
 import AdminPage from './pages/AdminPage';
 // Checkout (Tuấn)
@@ -105,10 +103,7 @@ const router = createBrowserRouter([
             },
         ]
     },
-    {
-        path: '/orders',
-        element: <OrdersPage />,
-    },
+
 ]);
 
 createRoot(document.getElementById("root")).render(
