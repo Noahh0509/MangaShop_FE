@@ -2,13 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function MangaCard({ manga }) {
-    const { id, title, author, genre, price, oldPrice, badge, cover } = manga;
+    const { id, slug, title, author, genre, price, oldPrice, badge, cover } = manga;
 
     return (
-        <Link to={`/products/${id}`}
+        <Link to={`/products/${slug}`}
             className="group relative bg-[#0e0e0e] p-6 flex flex-col no-underline color-inherit
-                transition-colors duration-250 hover:bg-[#161616]"
-            style={{ color: 'inherit' }}>
+                       border border-transparent hover:border-[#8a6d2f]
+                       transition-all duration-300 hover:bg-[#161616]"
+            style={{ color: 'inherit' }}>
 
             {/* Cover */}
             <div className="aspect-[3/4] bg-[#161616] overflow-hidden mb-5 relative">

@@ -7,9 +7,9 @@ export default function LoginForm() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    const [form, setForm]         = useState({ email: '', password: '' });
-    const [loading, setLoading]   = useState(false);
-    const [error, setError]       = useState('');
+    const [form, setForm] = useState({ email: '', password: '' });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [fieldErr, setFieldErr] = useState({});
 
     const handleChange = (e) => {
@@ -21,7 +21,7 @@ export default function LoginForm() {
 
     const validate = () => {
         const errs = {};
-        if (!form.email)    errs.email    = 'Vui lòng nhập email.';
+        if (!form.email) errs.email = 'Vui lòng nhập email.';
         else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Email không hợp lệ.';
         if (!form.password) errs.password = 'Vui lòng nhập mật khẩu.';
         return errs;
@@ -35,8 +35,16 @@ export default function LoginForm() {
         setLoading(true);
         try {
             const user = await login(form.email, form.password);
-            // Redirect theo role
-            navigate(user.role === 'admin' ? '/admin' : '/');
+
+            // 👑 ĐIỀU HƯỚNG THEO ROLE (CẬP NHẬT MỚI)
+            if (user.role === 'super_admin') {
+                navigate('/admin/master-control'); // Trùm vào thẳng tổng hành dinh
+            } else if (user.role === 'admin') {
+                navigate('/admin');                // Admin vào trang quản lý chung
+            } else {
+                navigate('/');                     // Khách về trang chủ
+            }
+
         } catch (err) {
             const msg = err.response?.data?.message || 'Đăng nhập thất bại.';
             setError(msg);
@@ -87,7 +95,7 @@ export default function LoginForm() {
 
                 <button type="submit" disabled={loading}
                     className="w-full py-4 text-[11px] tracking-[0.16em] uppercase font-medium border-none transition-all duration-250"
-                    style={{ background: loading ? '#8a6d2f' : '#c9a84c', color: '#000'}}>
+                    style={{ background: loading ? '#8a6d2f' : '#c9a84c', color: '#000' }}>
                     {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                 </button>
             </form>

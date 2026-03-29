@@ -1,380 +1,1132 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin — MangaShop</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;overflow-x:hidden;height:100%}
-body{background:#080808;color:#e8e2d9;font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;display:flex}
-a{text-decoration:none;color:inherit}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — MangaShop</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
 
-/* SIDEBAR NAV */
-.admin-nav{width:220px;flex-shrink:0;background:#0a0a0a;border-right:1px solid #1a1a1a;display:flex;flex-direction:column;height:100vh;position:sticky;top:0}
-.admin-logo{padding:28px 24px;border-bottom:1px solid #1a1a1a;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.08em}
-.admin-logo span{color:#c9a84c}
-.admin-logo small{display:block;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#444;margin-top:2px}
-.nav-section{padding:20px 0 8px;border-bottom:1px solid #111}
-.nav-section-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#333;padding:0 24px 8px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 24px;font-size:12px;letter-spacing:.06em;color:#555;cursor:pointer;transition:all .2s;border-left:2px solid transparent}
-.nav-item:hover{color:#e8e2d9;background:#0e0e0e}
-.nav-item.active{color:#c9a84c;border-left-color:#c9a84c;background:rgba(201,168,76,.04)}
-.nav-item svg{flex-shrink:0;opacity:.7}
-.nav-item.active svg{opacity:1}
-.admin-user{margin-top:auto;padding:20px 24px;border-top:1px solid #1a1a1a;display:flex;align-items:center;gap:10px}
-.admin-avatar{width:32px;height:32px;border:1px solid #8a6d2f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#c9a84c}
-.admin-name-sm{font-size:12px;color:#888}
-.admin-role{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#444}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      height: 100%
+    }
 
-/* MAIN */
-.admin-main{flex:1;overflow-y:auto;padding:0}
-.admin-header{padding:24px 40px;border-bottom:1px solid #1a1a1a;background:#0a0a0a;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.admin-header-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400}
-.admin-header-right{display:flex;align-items:center;gap:16px}
-.header-btn{padding:8px 18px;border:1px solid #222;background:transparent;color:#888;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s}.header-btn:hover{border-color:#8a6d2f;color:#c9a84c}
-.header-btn.primary{background:#c9a84c;color:#000;border-color:#c9a84c}.header-btn.primary:hover{background:#e0bc5f}
-.content{padding:32px 40px;animation:fadeUp .5s ease both}
+    body {
+      background: #080808;
+      color: #e8e2d9;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      display: flex
+    }
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
-.stat-card{border:1px solid #1a1a1a;padding:24px;background:#0a0a0a}
-.stat-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#444;margin-bottom:12px}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#e8e2d9;margin-bottom:4px}
-.stat-trend{font-size:11px;color:#555}
-.stat-trend.up{color:#4a9968}
-.stat-trend.down{color:#c0504a}
+    a {
+      text-decoration: none;
+      color: inherit
+    }
 
-/* TABS */
-.tabs{display:flex;border-bottom:1px solid #1a1a1a;margin-bottom:28px;gap:0}
-.tab{padding:12px 20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#555;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}.tab.active{color:#c9a84c;border-bottom-color:#c9a84c}.tab:hover{color:#e8e2d9}
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
 
-/* TOOLBAR */
-.tbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px}
-.search-sm{position:relative;flex:1;max-width:280px}
-.search-sm input{width:100%;background:transparent;border:1px solid #1a1a1a;color:#e8e2d9;font-family:'DM Sans',sans-serif;font-size:12px;padding:9px 36px 9px 14px;outline:none;transition:border-color .2s}.search-sm input:focus{border-color:#8a6d2f}
-.search-sm input::placeholder{color:#333}
-.search-sm svg{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#444}
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
 
-/* TABLE */
-.data-table{width:100%;border-collapse:collapse}
-.data-table th{text-align:left;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#444;font-weight:400;padding:0 12px 12px;border-bottom:1px solid #1a1a1a}
-.data-table td{padding:14px 12px;border-bottom:1px solid #111;font-size:13px;vertical-align:middle}
-.data-table tr:hover td{background:#0c0c0c}
-.data-table tr:last-child td{border-bottom:none}
-.td-title{font-family:'Cormorant Garamond',serif;font-size:16px}
-.td-badge{display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px}
-.badge-active{background:rgba(74,153,104,.1);border:1px solid rgba(74,153,104,.3);color:#4a9968}
-.badge-out{background:rgba(192,80,74,.08);border:1px solid rgba(192,80,74,.3);color:#c0504a}
-.badge-pending{background:rgba(201,168,76,.08);border:1px solid #8a6d2f;color:#c9a84c}
-.badge-shipped{background:rgba(100,149,237,.08);border:1px solid rgba(100,149,237,.3);color:#6495ed}
-.badge-done{background:rgba(74,153,104,.1);border:1px solid rgba(74,153,104,.3);color:#4a9968}
-.badge-admin{background:rgba(201,168,76,.08);border:1px solid #8a6d2f;color:#c9a84c}
-.badge-user{background:#111;border:1px solid #222;color:#555}
-.act-btn{padding:5px 12px;border:1px solid #222;background:transparent;color:#555;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-left:4px}.act-btn:hover{border-color:#8a6d2f;color:#c9a84c}
-.act-btn.del:hover{border-color:#c0504a;color:#c0504a}
-.td-cover{width:36px;height:48px;background:linear-gradient(135deg,#1a1a1a,#222);display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.25}
-.td-color{color:#888}
+    /* SIDEBAR NAV */
+    .admin-nav {
+      width: 220px;
+      flex-shrink: 0;
+      background: #0a0a0a;
+      border-right: 1px solid #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: sticky;
+      top: 0
+    }
 
-/* PAGINATION */
-.tbl-footer{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid #111;font-size:12px;color:#444}
-.pg-btns{display:flex;gap:4px}
-.pg-btn{width:28px;height:28px;border:1px solid #1a1a1a;background:transparent;color:#555;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}.pg-btn:hover,.pg-btn.active{border-color:#8a6d2f;color:#c9a84c}
+    .admin-logo {
+      padding: 28px 24px;
+      border-bottom: 1px solid #1a1a1a;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: .08em
+    }
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:#0e0e0e;border:1px solid #222;padding:36px;width:100%;max-width:500px;animation:fadeUp .3s ease}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;margin:0 0 24px;padding-bottom:16px;border-bottom:1px solid #222}
-.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.form-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#555}
-.form-input{background:transparent;border:1px solid #222;color:#e8e2d9;font-family:'DM Sans',sans-serif;font-size:13px;padding:11px 14px;outline:none;transition:border-color .2s}.form-input:focus{border-color:#8a6d2f}
-.form-input::placeholder{color:#333}
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal-footer{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;padding-top:20px;border-top:1px solid #222}
-.modal-btn{padding:10px 24px;border:1px solid #222;background:transparent;color:#888;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s}.modal-btn:hover{border-color:#8a6d2f;color:#c9a84c}
-.modal-btn.primary{background:#c9a84c;color:#000;border-color:#c9a84c}.modal-btn.primary:hover{background:#e0bc5f}
-</style>
+    .admin-logo span {
+      color: #c9a84c
+    }
+
+    .admin-logo small {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #444;
+      margin-top: 2px
+    }
+
+    .nav-section {
+      padding: 20px 0 8px;
+      border-bottom: 1px solid #111
+    }
+
+    .nav-section-label {
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #333;
+      padding: 0 24px 8px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      font-size: 12px;
+      letter-spacing: .06em;
+      color: #555;
+      cursor: pointer;
+      transition: all .2s;
+      border-left: 2px solid transparent
+    }
+
+    .nav-item:hover {
+      color: #e8e2d9;
+      background: #0e0e0e
+    }
+
+    .nav-item.active {
+      color: #c9a84c;
+      border-left-color: #c9a84c;
+      background: rgba(201, 168, 76, .04)
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+      opacity: .7
+    }
+
+    .nav-item.active svg {
+      opacity: 1
+    }
+
+    .admin-user {
+      margin-top: auto;
+      padding: 20px 24px;
+      border-top: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .admin-avatar {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #8a6d2f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #c9a84c
+    }
+
+    .admin-name-sm {
+      font-size: 12px;
+      color: #888
+    }
+
+    .admin-role {
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #444
+    }
+
+    /* MAIN */
+    .admin-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0
+    }
+
+    .admin-header {
+      padding: 24px 40px;
+      border-bottom: 1px solid #1a1a1a;
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10
+    }
+
+    .admin-header-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 400
+    }
+
+    .admin-header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .header-btn {
+      padding: 8px 18px;
+      border: 1px solid #222;
+      background: transparent;
+      color: #888;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .header-btn:hover {
+      border-color: #8a6d2f;
+      color: #c9a84c
+    }
+
+    .header-btn.primary {
+      background: #c9a84c;
+      color: #000;
+      border-color: #c9a84c
+    }
+
+    .header-btn.primary:hover {
+      background: #e0bc5f
+    }
+
+    .content {
+      padding: 32px 40px;
+      animation: fadeUp .5s ease both
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px
+    }
+
+    .stat-card {
+      border: 1px solid #1a1a1a;
+      padding: 24px;
+      background: #0a0a0a
+    }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 12px
+    }
+
+    .stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: #e8e2d9;
+      margin-bottom: 4px
+    }
+
+    .stat-trend {
+      font-size: 11px;
+      color: #555
+    }
+
+    .stat-trend.up {
+      color: #4a9968
+    }
+
+    .stat-trend.down {
+      color: #c0504a
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #1a1a1a;
+      margin-bottom: 28px;
+      gap: 0
+    }
+
+    .tab {
+      padding: 12px 20px;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #555;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all .2s
+    }
+
+    .tab.active {
+      color: #c9a84c;
+      border-bottom-color: #c9a84c
+    }
+
+    .tab:hover {
+      color: #e8e2d9
+    }
+
+    /* TOOLBAR */
+    .tbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px
+    }
+
+    .search-sm {
+      position: relative;
+      flex: 1;
+      max-width: 280px
+    }
+
+    .search-sm input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid #1a1a1a;
+      color: #e8e2d9;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      padding: 9px 36px 9px 14px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .search-sm input:focus {
+      border-color: #8a6d2f
+    }
+
+    .search-sm input::placeholder {
+      color: #333
+    }
+
+    .search-sm svg {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #444
+    }
+
+    /* TABLE */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .data-table th {
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #444;
+      font-weight: 400;
+      padding: 0 12px 12px;
+      border-bottom: 1px solid #1a1a1a
+    }
+
+    .data-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #111;
+      font-size: 13px;
+      vertical-align: middle
+    }
+
+    .data-table tr:hover td {
+      background: #0c0c0c
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .td-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px
+    }
+
+    .td-badge {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 3px 8px
+    }
+
+    .badge-active {
+      background: rgba(74, 153, 104, .1);
+      border: 1px solid rgba(74, 153, 104, .3);
+      color: #4a9968
+    }
+
+    .badge-out {
+      background: rgba(192, 80, 74, .08);
+      border: 1px solid rgba(192, 80, 74, .3);
+      color: #c0504a
+    }
+
+    .badge-pending {
+      background: rgba(201, 168, 76, .08);
+      border: 1px solid #8a6d2f;
+      color: #c9a84c
+    }
+
+    .badge-shipped {
+      background: rgba(100, 149, 237, .08);
+      border: 1px solid rgba(100, 149, 237, .3);
+      color: #6495ed
+    }
+
+    .badge-done {
+      background: rgba(74, 153, 104, .1);
+      border: 1px solid rgba(74, 153, 104, .3);
+      color: #4a9968
+    }
+
+    .badge-admin {
+      background: rgba(201, 168, 76, .08);
+      border: 1px solid #8a6d2f;
+      color: #c9a84c
+    }
+
+    .badge-user {
+      background: #111;
+      border: 1px solid #222;
+      color: #555
+    }
+
+    .act-btn {
+      padding: 5px 12px;
+      border: 1px solid #222;
+      background: transparent;
+      color: #555;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+      margin-left: 4px
+    }
+
+    .act-btn:hover {
+      border-color: #8a6d2f;
+      color: #c9a84c
+    }
+
+    .act-btn.del:hover {
+      border-color: #c0504a;
+      color: #c0504a
+    }
+
+    .td-cover {
+      width: 36px;
+      height: 48px;
+      background: linear-gradient(135deg, #1a1a1a, #222);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      opacity: .25
+    }
+
+    .td-color {
+      color: #888
+    }
+
+    /* PAGINATION */
+    .tbl-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #111;
+      font-size: 12px;
+      color: #444
+    }
+
+    .pg-btns {
+      display: flex;
+      gap: 4px
+    }
+
+    .pg-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #1a1a1a;
+      background: transparent;
+      color: #555;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s
+    }
+
+    .pg-btn:hover,
+    .pg-btn.active {
+      border-color: #8a6d2f;
+      color: #c9a84c
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .8);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: #0e0e0e;
+      border: 1px solid #222;
+      padding: 36px;
+      width: 100%;
+      max-width: 500px;
+      animation: fadeUp .3s ease
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      margin: 0 0 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px
+    }
+
+    .form-label {
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #555
+    }
+
+    .form-input {
+      background: transparent;
+      border: 1px solid #222;
+      color: #e8e2d9;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .form-input:focus {
+      border-color: #8a6d2f
+    }
+
+    .form-input::placeholder {
+      color: #333
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #222
+    }
+
+    .modal-btn {
+      padding: 10px 24px;
+      border: 1px solid #222;
+      background: transparent;
+      color: #888;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .modal-btn:hover {
+      border-color: #8a6d2f;
+      color: #c9a84c
+    }
+
+    .modal-btn.primary {
+      background: #c9a84c;
+      color: #000;
+      border-color: #c9a84c
+    }
+
+    .modal-btn.primary:hover {
+      background: #e0bc5f
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- SIDEBAR -->
-<nav class="admin-nav">
-  <div class="admin-logo">Manga<span>Shop</span><small>Admin Panel</small></div>
+  <!-- SIDEBAR -->
+  <nav class="admin-nav">
+    <div class="admin-logo">Manga<span>Shop</span><small>Admin Panel</small></div>
 
-  <div class="nav-section">
-    <div class="nav-section-label">Tổng quan</div>
-    <div class="nav-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-section-label">Quản lý</div>
-    <div class="nav-item active" onclick="showTab('products')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Sản phẩm
+    <div class="nav-section">
+      <div class="nav-section-label">Tổng quan</div>
+      <div class="nav-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"
+          viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+        </svg>Dashboard</div>
     </div>
-    <div class="nav-item" onclick="showTab('users')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Người dùng
-    </div>
-    <div class="nav-item" onclick="showTab('orders')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      Đơn hàng
-    </div>
-  </div>
 
-  <div class="nav-section">
-    <div class="nav-section-label">Hệ thống</div>
-    <div class="nav-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Cài đặt</div>
-  </div>
-
-  <div class="admin-user">
-    <div class="admin-avatar">A</div>
-    <div><div class="admin-name-sm">Admin</div><div class="admin-role">Quản trị viên</div></div>
-  </div>
-</nav>
-
-<!-- MAIN -->
-<div class="admin-main">
-  <div class="admin-header">
-    <div id="header-title" class="admin-header-title">Quản lý sản phẩm</div>
-    <div class="admin-header-right">
-      <button class="header-btn primary" onclick="openModal()">+ Thêm mới</button>
-    </div>
-  </div>
-
-  <div class="content">
-    <!-- STATS -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Tổng sản phẩm</div>
-        <div class="stat-val">5,248</div>
-        <div class="stat-trend up">↑ +12 tuần này</div>
+    <div class="nav-section">
+      <div class="nav-section-label">Quản lý</div>
+      <div class="nav-item active" onclick="showTab('products')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+        Sản phẩm
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Đơn hàng hôm nay</div>
-        <div class="stat-val">47</div>
-        <div class="stat-trend up">↑ +8 so với hôm qua</div>
+      <div class="nav-item" onclick="showTab('users')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Người dùng
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Doanh thu tháng</div>
-        <div class="stat-val">18.4<span style="font-size:20px">M</span></div>
-        <div class="stat-trend up">↑ +23% tháng trước</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Người dùng</div>
-        <div class="stat-val">1,203</div>
-        <div class="stat-trend up">↑ +34 tuần này</div>
+      <div class="nav-item" onclick="showTab('orders')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+        Đơn hàng
       </div>
     </div>
 
-    <!-- TABS -->
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab(this,'products-panel')">Sản phẩm</button>
-      <button class="tab" onclick="switchTab(this,'users-panel')">Người dùng</button>
-      <button class="tab" onclick="switchTab(this,'orders-panel')">Đơn hàng</button>
+    <div class="nav-section">
+      <div class="nav-section-label">Hệ thống</div>
+      <div class="nav-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"
+          viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          <path d="M4.93 4.93a10 10 0 0 0 0 14.14" />
+        </svg>Cài đặt</div>
     </div>
 
-    <!-- PRODUCTS PANEL -->
-    <div id="products-panel">
-      <div class="tbar">
-        <div class="search-sm"><input type="text" placeholder="Tìm sản phẩm..."><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
-        <div style="display:flex;gap:8px;">
-          <select style="background:transparent;border:1px solid #1a1a1a;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;outline:none;text-transform:uppercase;letter-spacing:.1em"><option>Tất cả</option><option>Shounen</option><option>Seinen</option><option>Mystery</option></select>
-          <select style="background:transparent;border:1px solid #1a1a1a;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;outline:none;text-transform:uppercase;letter-spacing:.1em"><option>Trạng thái</option><option>Còn hàng</option><option>Hết hàng</option></select>
+    <div class="admin-user">
+      <div class="admin-avatar">A</div>
+      <div>
+        <div class="admin-name-sm">Admin</div>
+        <div class="admin-role">Quản trị viên</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+    <div class="admin-header">
+      <div id="header-title" class="admin-header-title">Quản lý sản phẩm</div>
+      <div class="admin-header-right">
+        <button class="header-btn primary" onclick="openModal()">+ Thêm mới</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Tổng sản phẩm</div>
+          <div class="stat-val">5,248</div>
+          <div class="stat-trend up">↑ +12 tuần này</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Đơn hàng hôm nay</div>
+          <div class="stat-val">47</div>
+          <div class="stat-trend up">↑ +8 so với hôm qua</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Doanh thu tháng</div>
+          <div class="stat-val">18.4<span style="font-size:20px">M</span></div>
+          <div class="stat-trend up">↑ +23% tháng trước</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Người dùng</div>
+          <div class="stat-val">1,203</div>
+          <div class="stat-trend up">↑ +34 tuần này</div>
         </div>
       </div>
 
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:50px">Ảnh</th>
-            <th>Tên sản phẩm</th>
-            <th>Thể loại</th>
-            <th>Giá</th>
-            <th>Tồn kho</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="td-color">01</td>
-            <td><div class="td-cover">📖</div></td>
-            <td><div class="td-title">Jujutsu Kaisen — Tập 26</div><div style="font-size:11px;color:#555">Gege Akutami</div></td>
-            <td class="td-color">Shounen</td>
-            <td>35.000đ</td>
-            <td>43</td>
-            <td><span class="td-badge badge-active">Còn hàng</span></td>
-            <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button></td>
-          </tr>
-          <tr>
-            <td class="td-color">02</td>
-            <td><div class="td-cover">📖</div></td>
-            <td><div class="td-title">Chainsaw Man — Tập 17</div><div style="font-size:11px;color:#555">Tatsuki Fujimoto</div></td>
-            <td class="td-color">Seinen</td>
-            <td>40.000đ</td>
-            <td>28</td>
-            <td><span class="td-badge badge-active">Còn hàng</span></td>
-            <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button></td>
-          </tr>
-          <tr>
-            <td class="td-color">03</td>
-            <td><div class="td-cover">📖</div></td>
-            <td><div class="td-title">Naruto — Tập 72</div><div style="font-size:11px;color:#555">Masashi Kishimoto</div></td>
-            <td class="td-color">Shounen</td>
-            <td>35.000đ</td>
-            <td>0</td>
-            <td><span class="td-badge badge-out">Hết hàng</span></td>
-            <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button></td>
-          </tr>
-          <tr>
-            <td class="td-color">04</td>
-            <td><div class="td-cover">📖</div></td>
-            <td><div class="td-title">Spy x Family — Tập 12</div><div style="font-size:11px;color:#555">Tatsuya Endo</div></td>
-            <td class="td-color">Comedy</td>
-            <td>38.000đ</td>
-            <td>67</td>
-            <td><span class="td-badge badge-active">Còn hàng</span></td>
-            <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button></td>
-          </tr>
-          <tr>
-            <td class="td-color">05</td>
-            <td><div class="td-cover">📖</div></td>
-            <td><div class="td-title">Blue Lock — Tập 28</div><div style="font-size:11px;color:#555">Muneyuki Kaneshiro</div></td>
-            <td class="td-color">Sports</td>
-            <td>38.000đ</td>
-            <td>15</td>
-            <td><span class="td-badge badge-active">Còn hàng</span></td>
-            <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button></td>
-          </tr>
-          <tr>
-            <td class="td-color">06</td>
-            <td><div class="td-cover">📖</div></td>
-            <td><div class="td-title">Attack on Titan — Final</div><div style="font-size:11px;color:#555">Hajime Isayama</div></td>
-            <td class="td-color">Seinen</td>
-            <td>42.000đ</td>
-            <td>5</td>
-            <td><span class="td-badge badge-pending">Sắp hết</span></td>
-            <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="tbl-footer">
-        <span>Hiển thị 1–6 / 5.248 sản phẩm</span>
-        <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button class="pg-btn">2</button><button class="pg-btn">3</button><button class="pg-btn">›</button></div>
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(this,'products-panel')">Sản phẩm</button>
+        <button class="tab" onclick="switchTab(this,'users-panel')">Người dùng</button>
+        <button class="tab" onclick="switchTab(this,'orders-panel')">Đơn hàng</button>
       </div>
-    </div>
 
-    <!-- USERS PANEL -->
-    <div id="users-panel" style="display:none">
-      <div class="tbar">
-        <div class="search-sm"><input type="text" placeholder="Tìm người dùng..."><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>#</th><th>Họ tên</th><th>Email</th><th>Điện thoại</th><th>Đơn hàng</th><th>Vai trò</th><th>Ngày tạo</th><th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td class="td-color">01</td><td><div style="font-size:14px">Trần Minh Khoa</div></td><td class="td-color">khoa@gmail.com</td><td class="td-color">0901 234 567</td><td>12</td><td><span class="td-badge badge-user">User</span></td><td class="td-color">12/01/2025</td><td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button></td></tr>
-          <tr><td class="td-color">02</td><td><div style="font-size:14px">Nguyễn Thị Lan</div></td><td class="td-color">lan@email.com</td><td class="td-color">0912 345 678</td><td>5</td><td><span class="td-badge badge-user">User</span></td><td class="td-color">15/01/2025</td><td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button></td></tr>
-          <tr><td class="td-color">03</td><td><div style="font-size:14px">Lê Văn Minh</div></td><td class="td-color">minh@admin.com</td><td class="td-color">0903 456 789</td><td>—</td><td><span class="td-badge badge-admin">Admin</span></td><td class="td-color">01/01/2025</td><td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button></td></tr>
-          <tr><td class="td-color">04</td><td><div style="font-size:14px">Phạm Thị Hoa</div></td><td class="td-color">hoa@gmail.com</td><td class="td-color">0934 567 890</td><td>8</td><td><span class="td-badge badge-user">User</span></td><td class="td-color">20/01/2025</td><td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button></td></tr>
-          <tr><td class="td-color">05</td><td><div style="font-size:14px">Hoàng Văn Nam</div></td><td class="td-color">nam@gmail.com</td><td class="td-color">0945 678 901</td><td>3</td><td><span class="td-badge badge-user">User</span></td><td class="td-color">22/01/2025</td><td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button></td></tr>
-        </tbody>
-      </table>
-      <div class="tbl-footer">
-        <span>Hiển thị 1–5 / 1.203 người dùng</span>
-        <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button class="pg-btn">2</button><button class="pg-btn">›</button></div>
-      </div>
-    </div>
+      <!-- PRODUCTS PANEL -->
+      <div id="products-panel">
+        <div class="tbar">
+          <div class="search-sm"><input type="text" placeholder="Tìm sản phẩm..."><svg width="13" height="13"
+              fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg></div>
+          <div style="display:flex;gap:8px;">
+            <select
+              style="background:transparent;border:1px solid #1a1a1a;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;outline:none;text-transform:uppercase;letter-spacing:.1em">
+              <option>Tất cả</option>
+              <option>Shounen</option>
+              <option>Seinen</option>
+              <option>Mystery</option>
+            </select>
+            <select
+              style="background:transparent;border:1px solid #1a1a1a;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;outline:none;text-transform:uppercase;letter-spacing:.1em">
+              <option>Trạng thái</option>
+              <option>Còn hàng</option>
+              <option>Hết hàng</option>
+            </select>
+          </div>
+        </div>
 
-    <!-- ORDERS PANEL -->
-    <div id="orders-panel" style="display:none">
-      <div class="tbar">
-        <div class="search-sm"><input type="text" placeholder="Tìm đơn hàng..."><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
-        <select style="background:transparent;border:1px solid #1a1a1a;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;outline:none;text-transform:uppercase;letter-spacing:.1em"><option>Tất cả trạng thái</option><option>Chờ xác nhận</option><option>Đang giao</option><option>Hoàn thành</option><option>Đã hủy</option></select>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th style="width:50px">Ảnh</th>
+              <th>Tên sản phẩm</th>
+              <th>Thể loại</th>
+              <th>Giá</th>
+              <th>Tồn kho</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-color">01</td>
+              <td>
+                <div class="td-cover">📖</div>
+              </td>
+              <td>
+                <div class="td-title">Jujutsu Kaisen — Tập 26</div>
+                <div style="font-size:11px;color:#555">Gege Akutami</div>
+              </td>
+              <td class="td-color">Shounen</td>
+              <td>35.000đ</td>
+              <td>43</td>
+              <td><span class="td-badge badge-active">Còn hàng</span></td>
+              <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">02</td>
+              <td>
+                <div class="td-cover">📖</div>
+              </td>
+              <td>
+                <div class="td-title">Chainsaw Man — Tập 17</div>
+                <div style="font-size:11px;color:#555">Tatsuki Fujimoto</div>
+              </td>
+              <td class="td-color">Seinen</td>
+              <td>40.000đ</td>
+              <td>28</td>
+              <td><span class="td-badge badge-active">Còn hàng</span></td>
+              <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">03</td>
+              <td>
+                <div class="td-cover">📖</div>
+              </td>
+              <td>
+                <div class="td-title">Naruto — Tập 72</div>
+                <div style="font-size:11px;color:#555">Masashi Kishimoto</div>
+              </td>
+              <td class="td-color">Shounen</td>
+              <td>35.000đ</td>
+              <td>0</td>
+              <td><span class="td-badge badge-out">Hết hàng</span></td>
+              <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">04</td>
+              <td>
+                <div class="td-cover">📖</div>
+              </td>
+              <td>
+                <div class="td-title">Spy x Family — Tập 12</div>
+                <div style="font-size:11px;color:#555">Tatsuya Endo</div>
+              </td>
+              <td class="td-color">Comedy</td>
+              <td>38.000đ</td>
+              <td>67</td>
+              <td><span class="td-badge badge-active">Còn hàng</span></td>
+              <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">05</td>
+              <td>
+                <div class="td-cover">📖</div>
+              </td>
+              <td>
+                <div class="td-title">Blue Lock — Tập 28</div>
+                <div style="font-size:11px;color:#555">Muneyuki Kaneshiro</div>
+              </td>
+              <td class="td-color">Sports</td>
+              <td>38.000đ</td>
+              <td>15</td>
+              <td><span class="td-badge badge-active">Còn hàng</span></td>
+              <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">06</td>
+              <td>
+                <div class="td-cover">📖</div>
+              </td>
+              <td>
+                <div class="td-title">Attack on Titan — Final</div>
+                <div style="font-size:11px;color:#555">Hajime Isayama</div>
+              </td>
+              <td class="td-color">Seinen</td>
+              <td>42.000đ</td>
+              <td>5</td>
+              <td><span class="td-badge badge-pending">Sắp hết</span></td>
+              <td><button class="act-btn" onclick="openModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="tbl-footer">
+          <span>Hiển thị 1–6 / 5.248 sản phẩm</span>
+          <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button
+              class="pg-btn">2</button><button class="pg-btn">3</button><button class="pg-btn">›</button></div>
+        </div>
       </div>
-      <table class="data-table">
-        <thead>
-          <tr><th>Mã đơn</th><th>Khách hàng</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Trạng thái</th><th>Ngày đặt</th><th>Thao tác</th></tr>
-        </thead>
-        <tbody>
-          <tr><td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004821</td><td>Trần Minh Khoa</td><td class="td-color">3 sản phẩm</td><td>133.200đ</td><td><span class="td-badge badge-pending">Chờ xác nhận</span></td><td class="td-color">24/03/2025</td><td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td></tr>
-          <tr><td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004820</td><td>Nguyễn Thị Lan</td><td class="td-color">1 sản phẩm</td><td>38.000đ</td><td><span class="td-badge badge-shipped">Đang giao</span></td><td class="td-color">23/03/2025</td><td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td></tr>
-          <tr><td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004815</td><td>Phạm Thị Hoa</td><td class="td-color">5 sản phẩm</td><td>187.000đ</td><td><span class="td-badge badge-done">Hoàn thành</span></td><td class="td-color">20/03/2025</td><td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td></tr>
-          <tr><td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004810</td><td>Hoàng Văn Nam</td><td class="td-color">2 sản phẩm</td><td>76.000đ</td><td><span class="td-badge badge-done">Hoàn thành</span></td><td class="td-color">18/03/2025</td><td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td></tr>
-          <tr><td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#555">#MS-2025-004802</td><td>Lê Văn An</td><td class="td-color">1 sản phẩm</td><td>42.000đ</td><td><span class="td-badge badge-out">Đã hủy</span></td><td class="td-color">15/03/2025</td><td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td></tr>
-        </tbody>
-      </table>
-      <div class="tbl-footer">
-        <span>Hiển thị 1–5 / 4.821 đơn hàng</span>
-        <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button class="pg-btn">2</button><button class="pg-btn">3</button><button class="pg-btn">›</button></div>
+
+      <!-- USERS PANEL -->
+      <div id="users-panel" style="display:none">
+        <div class="tbar">
+          <div class="search-sm"><input type="text" placeholder="Tìm người dùng..."><svg width="13" height="13"
+              fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg></div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Họ tên</th>
+              <th>Email</th>
+              <th>Điện thoại</th>
+              <th>Đơn hàng</th>
+              <th>Vai trò</th>
+              <th>Ngày tạo</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-color">01</td>
+              <td>
+                <div style="font-size:14px">Trần Minh Khoa</div>
+              </td>
+              <td class="td-color">khoa@gmail.com</td>
+              <td class="td-color">0901 234 567</td>
+              <td>12</td>
+              <td><span class="td-badge badge-user">User</span></td>
+              <td class="td-color">12/01/2025</td>
+              <td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">02</td>
+              <td>
+                <div style="font-size:14px">Nguyễn Thị Lan</div>
+              </td>
+              <td class="td-color">lan@email.com</td>
+              <td class="td-color">0912 345 678</td>
+              <td>5</td>
+              <td><span class="td-badge badge-user">User</span></td>
+              <td class="td-color">15/01/2025</td>
+              <td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">03</td>
+              <td>
+                <div style="font-size:14px">Lê Văn Minh</div>
+              </td>
+              <td class="td-color">minh@admin.com</td>
+              <td class="td-color">0903 456 789</td>
+              <td>—</td>
+              <td><span class="td-badge badge-admin">Admin</span></td>
+              <td class="td-color">01/01/2025</td>
+              <td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">04</td>
+              <td>
+                <div style="font-size:14px">Phạm Thị Hoa</div>
+              </td>
+              <td class="td-color">hoa@gmail.com</td>
+              <td class="td-color">0934 567 890</td>
+              <td>8</td>
+              <td><span class="td-badge badge-user">User</span></td>
+              <td class="td-color">20/01/2025</td>
+              <td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-color">05</td>
+              <td>
+                <div style="font-size:14px">Hoàng Văn Nam</div>
+              </td>
+              <td class="td-color">nam@gmail.com</td>
+              <td class="td-color">0945 678 901</td>
+              <td>3</td>
+              <td><span class="td-badge badge-user">User</span></td>
+              <td class="td-color">22/01/2025</td>
+              <td><button class="act-btn" onclick="openUserModal()">Sửa</button><button class="act-btn del">Xóa</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="tbl-footer">
+          <span>Hiển thị 1–5 / 1.203 người dùng</span>
+          <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button
+              class="pg-btn">2</button><button class="pg-btn">›</button></div>
+        </div>
+      </div>
+
+      <!-- ORDERS PANEL -->
+      <div id="orders-panel" style="display:none">
+        <div class="tbar">
+          <div class="search-sm"><input type="text" placeholder="Tìm đơn hàng..."><svg width="13" height="13"
+              fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg></div>
+          <select
+            style="background:transparent;border:1px solid #1a1a1a;color:#555;font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;outline:none;text-transform:uppercase;letter-spacing:.1em">
+            <option>Tất cả trạng thái</option>
+            <option>Chờ xác nhận</option>
+            <option>Đang giao</option>
+            <option>Hoàn thành</option>
+            <option>Đã hủy</option>
+          </select>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Khách hàng</th>
+              <th>Sản phẩm</th>
+              <th>Tổng tiền</th>
+              <th>Trạng thái</th>
+              <th>Ngày đặt</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004821</td>
+              <td>Trần Minh Khoa</td>
+              <td class="td-color">3 sản phẩm</td>
+              <td>133.200đ</td>
+              <td><span class="td-badge badge-pending">Chờ xác nhận</span></td>
+              <td class="td-color">24/03/2025</td>
+              <td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004820</td>
+              <td>Nguyễn Thị Lan</td>
+              <td class="td-color">1 sản phẩm</td>
+              <td>38.000đ</td>
+              <td><span class="td-badge badge-shipped">Đang giao</span></td>
+              <td class="td-color">23/03/2025</td>
+              <td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004815</td>
+              <td>Phạm Thị Hoa</td>
+              <td class="td-color">5 sản phẩm</td>
+              <td>187.000đ</td>
+              <td><span class="td-badge badge-done">Hoàn thành</span></td>
+              <td class="td-color">20/03/2025</td>
+              <td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#c9a84c">#MS-2025-004810</td>
+              <td>Hoàng Văn Nam</td>
+              <td class="td-color">2 sản phẩm</td>
+              <td>76.000đ</td>
+              <td><span class="td-badge badge-done">Hoàn thành</span></td>
+              <td class="td-color">18/03/2025</td>
+              <td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:'Cormorant Garamond',serif;font-size:15px;color:#555">#MS-2025-004802</td>
+              <td>Lê Văn An</td>
+              <td class="td-color">1 sản phẩm</td>
+              <td>42.000đ</td>
+              <td><span class="td-badge badge-out">Đã hủy</span></td>
+              <td class="td-color">15/03/2025</td>
+              <td><button class="act-btn">Xem</button><button class="act-btn">Cập nhật</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="tbl-footer">
+          <span>Hiển thị 1–5 / 4.821 đơn hàng</span>
+          <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button
+              class="pg-btn">2</button><button class="pg-btn">3</button><button class="pg-btn">›</button></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL: Add/Edit Product -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-title">Thêm / Sửa sản phẩm</div>
-    <div class="form-row-2">
-      <div class="form-group"><label class="form-label">Tên sản phẩm *</label><input class="form-input" type="text" placeholder="Tên truyện"></div>
-      <div class="form-group"><label class="form-label">Tác giả</label><input class="form-input" type="text" placeholder="Tên tác giả"></div>
-    </div>
-    <div class="form-row-2">
-      <div class="form-group"><label class="form-label">Thể loại</label><select class="form-input"><option>Shounen</option><option>Seinen</option><option>Mystery</option><option>Comedy</option><option>Sports</option></select></div>
-      <div class="form-group"><label class="form-label">NXB</label><input class="form-input" type="text" placeholder="Nhà xuất bản"></div>
-    </div>
-    <div class="form-row-2">
-      <div class="form-group"><label class="form-label">Giá bán *</label><input class="form-input" type="number" placeholder="35000"></div>
-      <div class="form-group"><label class="form-label">Số lượng tồn</label><input class="form-input" type="number" placeholder="0"></div>
-    </div>
-    <div class="form-group"><label class="form-label">Mô tả</label><textarea class="form-input" style="min-height:80px;resize:vertical" placeholder="Mô tả sản phẩm..."></textarea></div>
-    <div class="modal-footer">
-      <button class="modal-btn" onclick="closeModal()">Hủy</button>
-      <button class="modal-btn primary">Lưu sản phẩm</button>
+  <!-- MODAL: Add/Edit Product -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-title">Thêm / Sửa sản phẩm</div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Tên sản phẩm *</label><input class="form-input" type="text"
+            placeholder="Tên truyện"></div>
+        <div class="form-group"><label class="form-label">Tác giả</label><input class="form-input" type="text"
+            placeholder="Tên tác giả"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Thể loại</label><select class="form-input">
+            <option>Shounen</option>
+            <option>Seinen</option>
+            <option>Mystery</option>
+            <option>Comedy</option>
+            <option>Sports</option>
+          </select></div>
+        <div class="form-group"><label class="form-label">NXB</label><input class="form-input" type="text"
+            placeholder="Nhà xuất bản"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Giá bán *</label><input class="form-input" type="number"
+            placeholder="35000"></div>
+        <div class="form-group"><label class="form-label">Số lượng tồn</label><input class="form-input" type="number"
+            placeholder="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Mô tả</label><textarea class="form-input"
+          style="min-height:80px;resize:vertical" placeholder="Mô tả sản phẩm..."></textarea></div>
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeModal()">Hủy</button>
+        <button class="modal-btn primary">Lưu sản phẩm</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL: Add/Edit User -->
-<div class="modal-overlay" id="user-modal">
-  <div class="modal">
-    <div class="modal-title">Thêm / Sửa người dùng</div>
-    <div class="form-row-2">
-      <div class="form-group"><label class="form-label">Họ và tên *</label><input class="form-input" type="text" placeholder="Họ và tên"></div>
-      <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" placeholder="email@example.com"></div>
-    </div>
-    <div class="form-row-2">
-      <div class="form-group"><label class="form-label">Số điện thoại</label><input class="form-input" type="tel" placeholder="0912 345 678"></div>
-      <div class="form-group"><label class="form-label">Vai trò</label><select class="form-input"><option>User</option><option>Admin</option></select></div>
-    </div>
-    <div class="form-group"><label class="form-label">Mật khẩu mới (để trống nếu không đổi)</label><input class="form-input" type="password" placeholder="••••••••"></div>
-    <div class="modal-footer">
-      <button class="modal-btn" onclick="closeUserModal()">Hủy</button>
-      <button class="modal-btn primary">Lưu người dùng</button>
+  <!-- MODAL: Add/Edit User -->
+  <div class="modal-overlay" id="user-modal">
+    <div class="modal">
+      <div class="modal-title">Thêm / Sửa người dùng</div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Họ và tên *</label><input class="form-input" type="text"
+            placeholder="Họ và tên"></div>
+        <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email"
+            placeholder="email@example.com"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Số điện thoại</label><input class="form-input" type="tel"
+            placeholder="0912 345 678"></div>
+        <div class="form-group"><label class="form-label">Vai trò</label><select class="form-input">
+            <option>User</option>
+            <option>Admin</option>
+          </select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Mật khẩu mới (để trống nếu không đổi)</label><input
+          class="form-input" type="password" placeholder="••••••••"></div>
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="closeUserModal()">Hủy</button>
+        <button class="modal-btn primary">Lưu người dùng</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-function switchTab(btn,panelId){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  ['products-panel','users-panel','orders-panel'].forEach(id=>document.getElementById(id).style.display='none');
-  document.getElementById(panelId).style.display='block';
-}
-function openModal(){document.getElementById('modal').classList.add('open')}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
-function openUserModal(){document.getElementById('user-modal').classList.add('open')}
-function closeUserModal(){document.getElementById('user-modal').classList.remove('open')}
-document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()})
-document.getElementById('user-modal').addEventListener('click',function(e){if(e.target===this)closeUserModal()})
-</script>
+  <script>
+    function switchTab(btn, panelId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      ['products-panel', 'users-panel', 'orders-panel'].forEach(id => document.getElementById(id).style.display = 'none');
+      document.getElementById(panelId).style.display = 'block';
+    }
+    function openModal() { document.getElementById('modal').classList.add('open') }
+    function closeModal() { document.getElementById('modal').classList.remove('open') }
+    function openUserModal() { document.getElementById('user-modal').classList.add('open') }
+    function closeUserModal() { document.getElementById('user-modal').classList.remove('open') }
+    document.getElementById('modal').addEventListener('click', function (e) { if (e.target === this) closeModal() })
+    document.getElementById('user-modal').addEventListener('click', function (e) { if (e.target === this) closeUserModal() })
+  </script>
 </body>
+
 </html>
