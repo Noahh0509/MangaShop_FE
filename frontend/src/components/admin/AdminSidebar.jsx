@@ -54,8 +54,14 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       {/* TỔNG QUAN */}
       <div className="py-5 border-b border-[#111]">
         <div className="text-[9px] tracking-[.2em] uppercase text-[#333] px-6 pb-2">Tổng quan</div>
-        <div className="flex items-center gap-2.5 px-6 py-2.5 text-xs tracking-[.06em] text-[#555] cursor-pointer transition-all border-l-2 border-transparent hover:text-[#e8e2d9] hover:bg-[#0e0e0e]">
-          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" className="shrink-0 opacity-70">
+        <div 
+          onClick={() => setActiveTab('dashboard')}
+          className={`flex items-center gap-2.5 px-6 py-2.5 text-xs tracking-[.06em] cursor-pointer transition-all border-l-2 
+            ${activeTab === 'dashboard' 
+              ? 'text-[#c9a84c] border-[#c9a84c] bg-[#c9a84c]/5' 
+              : 'text-[#555] border-transparent hover:text-[#e8e2d9] hover:bg-[#0e0e0e]'}`}
+        >
+          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" className={`shrink-0 ${activeTab === 'dashboard' ? 'opacity-100' : 'opacity-70'}`}>
             <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
             <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
           </svg>
