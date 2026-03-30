@@ -68,7 +68,7 @@ export default function PaymentResult() {
             Tiếp tục mua sắm
           </button>
           <button
-            onClick={() => navigate("/profile/orders")} // Trỏ tới trang quản lý đơn hàng của User
+            onClick={() => navigate("/orders")} // Trỏ tới trang quản lý đơn hàng của User
             className="px-6 py-2 bg-[#c9a84c] text-black font-bold rounded hover:bg-[#b09341] transition-colors"
           >
             Xem đơn hàng

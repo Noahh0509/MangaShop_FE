@@ -139,6 +139,11 @@ export default function Header() {
                                         className="flex items-center gap-3 px-4 py-3 text-[11px] tracking-[0.12em] uppercase text-[#888] hover:text-[#e8e2d9] hover:bg-[#1e1e1e] transition-colors no-underline">
                                         Tài khoản
                                     </Link>
+                                    <Link to="/orders"
+                                      onClick={() => setDropdownOpen(false)}
+                                     className="flex items-center gap-3 px-4 py-3 text-[11px] tracking-[0.12em] uppercase text-[#888] hover:text-[#e8e2d9] hover:bg-[#1e1e1e] transition-colors no-underline">
+                                      Đơn hàng
+                                    </Link>
 
                                     <div className="border-t border-[#222] my-1" />
                                     <button onClick={handleLogout}

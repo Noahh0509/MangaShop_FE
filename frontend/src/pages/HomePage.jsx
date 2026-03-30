@@ -3,7 +3,8 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedSection from '../components/home/Featuredsection';
-import NewReleasesSection from '../components/home/Newreleasessection';
+import SlideSection from '../components/home/SlideSection';
+import Newreleasessection from '../components/home/Newreleasessection';
 import { chatService } from '../services/chatService'; // Import service vừa tạo
 
 export default function HomePage() {
@@ -63,8 +64,10 @@ export default function HomePage() {
             <Header />
             <main className="flex-1">
                 <HeroSection />
+                <SlideSection/>
                 <FeaturedSection />
-                <NewReleasesSection />
+                
+                <Newreleasessection/>
             </main>
             <Footer />
 

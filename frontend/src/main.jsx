@@ -17,7 +17,7 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
-
+import  OrdersPage from "./pages/OrdersPage";
 
 
 import ProfilePage from './pages/ProfilePage';
@@ -29,6 +29,7 @@ import AdminPage from './pages/AdminPage';
 import CartPage from "./components/checkout/cart/CartPage";
 import CheckoutPage from "./components/checkout/payment/CheckoutPage";
 import PaymentResult from "./components/checkout/payment/PaymentResult";
+
 
 /**
  * 🛡️ 1. KHIÊN USER THƯỜNG (Thay thế cho file ProtectedRoute đã xóa)
@@ -72,6 +73,7 @@ const router = createBrowserRouter([
     { path: "/products", element: <ProductsPage /> },
     { path: "/products/:slug", element: <ProductDetailPage /> },
     { path: '/forgot-password', element: <ForgotPasswordPage /> },
+    { path: '/orders', element:<OrdersPage/>},
 
     // --- ROUTES CẦN ĐĂNG NHẬP (USER THƯỜNG) ---
     {
