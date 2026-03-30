@@ -9,17 +9,6 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       icon: <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     },
     {
-      id: 'orders',
-      label: 'Đơn hàng',
-      icon: (
-        <>
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-          <path d="M3 6h18" />
-          <path d="M16 10a4 4 0 0 1-8 0" />
-        </>
-      )
-    },
-    {
       id: 'promotions', // 🎯 ID đã được đổi lại để không bị trùng
       label: 'Khuyến mãi',
       // 🏷️ Icon cái Tag Khuyến mãi cực đẹp
@@ -30,6 +19,18 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
         </>
       )
     },
+    {
+      id: 'orders',
+      label: 'Đơn hàng',
+      icon: (
+        <>
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+          <path d="M3 6h18" />
+          <path d="M16 10a4 4 0 0 1-8 0" />
+        </>
+      )
+    },
+
   ];
 
   return (
@@ -54,8 +55,14 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       {/* TỔNG QUAN */}
       <div className="py-5 border-b border-[#111]">
         <div className="text-[9px] tracking-[.2em] uppercase text-[#333] px-6 pb-2">Tổng quan</div>
-        <div className="flex items-center gap-2.5 px-6 py-2.5 text-xs tracking-[.06em] text-[#555] cursor-pointer transition-all border-l-2 border-transparent hover:text-[#e8e2d9] hover:bg-[#0e0e0e]">
-          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" className="shrink-0 opacity-70">
+        <div
+          onClick={() => setActiveTab('dashboard')}
+          className={`flex items-center gap-2.5 px-6 py-2.5 text-xs tracking-[.06em] cursor-pointer transition-all border-l-2 
+            ${activeTab === 'dashboard'
+              ? 'text-[#c9a84c] border-[#c9a84c] bg-[#c9a84c]/5'
+              : 'text-[#555] border-transparent hover:text-[#e8e2d9] hover:bg-[#0e0e0e]'}`}
+        >
+          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" className={`shrink-0 ${activeTab === 'dashboard' ? 'opacity-100' : 'opacity-70'}`}>
             <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
             <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
           </svg>
@@ -85,7 +92,6 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       <div className="mt-auto p-[20px_24px] border-t border-[#1a1a1a] flex items-center gap-2.5">
         <div className="w-8 h-8 border border-[#8a6d2f] rounded-full flex items-center justify-center text-xs text-[#c9a84c] font-bold">
           {/* Tuan có thể thay chữ A bằng chữ cái đầu của tên sếp */}
-          T
         </div>
         <div>
           <div className="text-xs text-[#888] font-medium">Admin</div>
