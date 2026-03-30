@@ -22,9 +22,9 @@ const ProductDetailPage = () => {
       try {
         setLoading(true);
         window.scrollTo(0, 0); // Tự động cuộn lên đầu trang khi chuyển link
-        
+
         const response = await axios.get(`${API_URL}/${slug}`);
-        
+
         if (response.data.success) {
           setProductData(response.data.data);
           setPromotions(response.data.activePromotions || []);
@@ -54,23 +54,27 @@ const ProductDetailPage = () => {
 
   return (
     <>
-    <Header />
-    <div className="pt-[72px] bg-[#0e0e0e] text-[#e8e2d9] min-h-screen">
-      <Breadcrumb items={breadcrumbItems} />
+      <Header />
+      <div className="pt-[72px] bg-[#0e0e0e] text-[#e8e2d9] min-h-screen">
+        <Breadcrumb items={breadcrumbItems} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 p-6 md:p-12 animate-[fadeUp_0.7s_ease_both]">
-        {/* Truyền mảng ảnh vào Gallery */}
-        <ProductGallery images={productData.images} />
-        
-        {/* Truyền dữ liệu và mảng khuyến mãi vào phần Info */}
-        <ProductInfo product={productData} promotions={promotions} />
+        {/* Chỉnh sửa Grid ở đây: dùng tỉ lệ 5/12 và 7/12 */}
+        <div className="grid grid-cols-1 md:grid-cols-[400px_1fr] gap-10 p-6 md:p-12 lg:px-32 animate-[fadeUp_0.7s_ease_both] items-start">
+          {/* Cột 1: Product Gallery - Giới hạn chiều rộng tối đa */}
+          <div className="w-full max-w-[500px] mx-auto lg:ml-0">
+            <ProductGallery images={productData.images} />
+          </div>
+
+          {/* Cột 2: Product Info - Để nội dung giãn thoải mái */}
+          <div className="flex flex-col space-y-6">
+            <ProductInfo product={productData} promotions={promotions} />
+          </div>
+
+        </div>
+
+        <ProductTabs product={productData} />
       </div>
-
-      {/* Truyền mô tả vào Tabs */}
-      <ProductTabs product={productData} />
-
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };

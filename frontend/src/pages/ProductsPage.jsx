@@ -30,7 +30,7 @@ const ProductsPage = () => {
         // 2. Đóng gói tham số để gửi cho Backend
         const params = {
           page: currentPage,
-          limit: 12 // Lấy 12 truyện trên 1 trang
+          limit: 10 // Lấy 12 truyện trên 1 trang
         };
         
         if (categoryFilter) params.category = categoryFilter;
@@ -129,7 +129,7 @@ const ProductsPage = () => {
             <button 
               onClick={() => handlePageChange(currentPage + 1)}
               // Tạm thời vô hiệu hóa nút Tiến nếu số lượng truyện trả về ít hơn 12 (tức là đã đến trang cuối)
-              disabled={products.length < 12} 
+              disabled={products.length < 10} 
               className="w-9 h-9 border border-[#222] flex items-center justify-center text-xs text-[#555] cursor-pointer hover:border-[#8a6d2f] hover:text-[#c9a84c] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               ›

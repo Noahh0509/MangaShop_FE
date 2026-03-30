@@ -6,6 +6,8 @@ export const OrderPanel = () => {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4;
 
     const fetchOrders = async () => {
         try {
@@ -20,6 +22,11 @@ export const OrderPanel = () => {
     };
 
     useEffect(() => { fetchOrders(); }, []);
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentInvoices = invoices.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(invoices.length / itemsPerPage);
 
     if (loading) return <div className="p-20 text-center text-[#444] text-[10px] uppercase tracking-widest">Đang soạn đơn...</div>;
 
@@ -42,7 +49,7 @@ export const OrderPanel = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {invoices.map((order) => (
+                    {currentInvoices.map((order) => (
                         <tr key={order._id} className="hover:bg-[#0c0c0c] transition-colors border-b border-[#111]">
                             <td className="p-4 font-mono text-[12px] text-[#c9a84c]">{order.invoiceCode}</td>
                             <td className="p-4">
@@ -85,6 +92,30 @@ export const OrderPanel = () => {
                     ))}
                 </tbody>
             </table>
+
+            {totalPages > 1 && (
+                <div className="mt-8 flex justify-center items-center gap-4">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(prev => prev - 1)}
+                        className={`text-[10px] uppercase tracking-widest px-3 py-1 border border-[#c9a84c]/20 transition-all ${currentPage === 1 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-[#c9a84c]/10 text-[#c9a84c]'}`}
+                    >
+                        Trang trước
+                    </button>
+
+                    <div className="text-[10px] text-[#444] tracking-widest uppercase">
+                        Trang <span className="text-[#c9a84c]">{currentPage}</span> / {totalPages}
+                    </div>
+
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(prev => prev + 1)}
+                        className={`text-[10px] uppercase tracking-widest px-3 py-1 border border-[#c9a84c]/20 transition-all ${currentPage === totalPages ? 'opacity-20 cursor-not-allowed' : 'hover:bg-[#c9a84c]/10 text-[#c9a84c]'}`}
+                    >
+                        Trang sau
+                    </button>
+                </div>
+            )}
 
             {selectedOrder && (
                 <OrderDetailModal
