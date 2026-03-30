@@ -18,7 +18,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
 import  OrdersPage from "./pages/OrdersPage";
-
+import AboutPage from "./pages/AboutPage";
 
 import ProfilePage from './pages/ProfilePage';
 
@@ -74,6 +74,7 @@ const router = createBrowserRouter([
     { path: "/products/:slug", element: <ProductDetailPage /> },
     { path: '/forgot-password', element: <ForgotPasswordPage /> },
     { path: '/orders', element:<OrdersPage/>},
+    { path: '/about', element:<AboutPage/>},
 
     // --- ROUTES CẦN ĐĂNG NHẬP (USER THƯỜNG) ---
     {
