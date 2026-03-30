@@ -16,7 +16,7 @@ const teamMembers = [
     { 
         name: "Hồ Phú Quý", 
         role: "Full Stack", 
-        image: "https://i.pinimg.com/originals/42/42/8a/42428ac480194b6f17bd74550c83ae81.gif"
+        image: "https://i.pinimg.com/1200x/77/79/10/777910b3cd008ff96bd252402f74e3a7.jpg"
     },
     { 
         name: "Nguyễn Đăng Khoa", 
